@@ -9,7 +9,7 @@ import {
 import UserItems from "../common/UserItems";
 
 import { 
-    EXPENSES_MANAGER_PATH, EXPENSE_TYPES_MANAGER_PATH, 
+    EXPENSES_MANAGER_PATH, EXPENSE_TYPES_MANAGER_PATH, EXPENSE_VALUES_MANAGER_PATH,
     INCOMES_MANAGER_PATH, INCOME_TYPES_MANAGER_PATH,
     SAVINGS_MANAGER_PATH, SAVING_TYPES_MANGER_PATH, SAVING_VALUES_MANAGER_PATH
  } from "../../AppPaths";
@@ -35,7 +35,7 @@ const Navigation = ({
             {
                 label: 'Expense Values',
                 active: activeSubItem === "Expense Values",
-                url: '/manager/expense/values',
+                url: `${EXPENSE_VALUES_MANAGER_PATH}`,
             }
           ]
         },
