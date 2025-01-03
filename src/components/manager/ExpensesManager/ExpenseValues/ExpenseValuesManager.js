@@ -1,9 +1,7 @@
 import React from "react";
 import { Block } from "baseui/block";
-import { Button } from "baseui/button";
-import { Heading, HeadingLevel } from 'baseui/heading';
+import { Button, SIZE } from "baseui/button";
 import { Skeleton } from "baseui/skeleton";
-import { FlexGrid, FlexGridItem } from "baseui/flex-grid";
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
@@ -21,12 +19,6 @@ import ExpenseTable from "./ExpenseTable";
 import AddExpenseModal from "../../../common/ExpensesActions/AddExpenseModal";
 import EditExpenseModal from "../../../common/ExpensesActions/EditExpenseModal";
 
-
-const buttonGridOverrides = {
-    display: 'flex',
-    alignSelf: 'center',
-    justifyContent: 'flex-end'
-};
 
 const ExpenseManager = () => {
     const [isModalOpen, setIsModalOpen] = React.useState(false);
@@ -99,27 +91,20 @@ const ExpenseManager = () => {
 
     return (
         <>
-            <ManagerSubPage activeItem={"Expenses"} activeSubItem={"Expense Values"}>
-                <FlexGrid flexGridColumnCount={2}>
-                    <FlexGridItem>
-                        <HeadingLevel>
-                            <HeadingLevel>
-                                <HeadingLevel>
-                                    <Heading>Expense Values Manager</Heading>
-                                </HeadingLevel>
-                            </HeadingLevel>
-                        </HeadingLevel>
-                    </FlexGridItem>
-                    <FlexGridItem {...buttonGridOverrides}>
-                        <Button 
-                            onClick={() => setIsAddModalOpen(true)}
-                            startEnhancer={<FontAwesomeIcon icon={faPlus} />}
-                        >
-                                New
-                        </Button>
-                    </FlexGridItem>
-                </FlexGrid>
-                
+            <ManagerSubPage 
+                activeItem={"Expenses"} 
+                activeSubItem={"Expense Values"}
+                pageTitle={"Expense Values Manager"}
+                actions={
+                    <Button 
+                        onClick={() => setIsAddModalOpen(true)}
+                        startEnhancer={<FontAwesomeIcon icon={faPlus} />}
+                        size={SIZE.compact}
+                    >
+                        New
+                    </Button>
+                }
+            >
 
                 <Block>
                     {isLoading &&
@@ -134,6 +119,7 @@ const ExpenseManager = () => {
                         <ExpenseTable data={data} onClickEdit={onClickEdit} onClickDelete={onClickDelete} />
                     }
                 </Block>
+
             </ManagerSubPage>
 
             {selectedExpense &&

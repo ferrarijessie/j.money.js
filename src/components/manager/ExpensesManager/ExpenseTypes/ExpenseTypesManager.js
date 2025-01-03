@@ -1,9 +1,7 @@
 import React from "react";
 import { Block } from "baseui/block";
 import { Button, SIZE } from "baseui/button";
-import { Heading, HeadingLevel } from 'baseui/heading';
 import { Skeleton } from "baseui/skeleton";
-import { FlexGrid, FlexGridItem } from "baseui/flex-grid";
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
@@ -19,12 +17,6 @@ import ManagerSubPage from "../../ManagerSubPage";
 import ExpenseTypesTable from "./ExpenseTypesTable";
 import ExpenseTypeModal from "./ExpenseTypeModal";
 
-
-const buttonGridOverrides = {
-    display: 'flex',
-    alignSelf: 'center',
-    justifyContent: 'flex-end'
-};
 
 const ExpenseTypeManager = () => {
     const [isModalOpen, setIsModalOpen] = React.useState(false);
@@ -87,29 +79,20 @@ const ExpenseTypeManager = () => {
 
     return (
         <>
-            <ManagerSubPage activeItem={"Expenses"} activeSubItem={"Expense Types"}>
-                <FlexGrid flexGridColumnCount={2}>
-                    <FlexGridItem>
-                        <HeadingLevel>
-                            <HeadingLevel>
-                                <HeadingLevel>
-                                    <Heading>Expense Types Manager</Heading>
-                                </HeadingLevel>
-                            </HeadingLevel>
-                        </HeadingLevel>
-                    </FlexGridItem>
-                    <FlexGridItem {...buttonGridOverrides}>
-                        <Button 
-                            onClick={() => setIsModalOpen(true)}
-                            startEnhancer={<FontAwesomeIcon icon={faPlus} />}
-                            size={SIZE.compact}
-                        >
-                                New
-                        </Button>
-                    </FlexGridItem>
-                </FlexGrid>
-                
-
+            <ManagerSubPage 
+                activeItem={"Expenses"} 
+                activeSubItem={"Expense Types"}
+                pageTitle={"Expense Types Manager"}
+                actions={
+                    <Button 
+                        onClick={() => setIsModalOpen(true)}
+                        startEnhancer={<FontAwesomeIcon icon={faPlus} />}
+                        size={SIZE.compact}
+                    >
+                        New
+                    </Button>
+                }
+            >   
                 <Block>
                     {isLoading &&
                         <Skeleton
@@ -123,6 +106,7 @@ const ExpenseTypeManager = () => {
                         <ExpenseTypesTable data={data} onClickEdit={onClickEdit} onClickDelete={onClickDelete} />
                     }
                 </Block>
+                
             </ManagerSubPage>
 
             <ExpenseTypeModal 
