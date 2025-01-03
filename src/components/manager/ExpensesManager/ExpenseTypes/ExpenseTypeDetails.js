@@ -11,13 +11,12 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPencil, faPlus } from '@fortawesome/free-solid-svg-icons';
 
 import { useExpenseType } from "../../../../hooks/expenseTypes/useExpenseType";
-import { useExpenseTypePut } from "../../../../hooks/expenseTypes/useExpenseTypePut";
 import { useExpenseDelete } from "../../../../hooks/expenses/useExpenseDelete";
 
 import ManagerSubPage from "../../ManagerSubPage";
-import ExpenseTypeModal from "./ExpenseTypeModal";
+import ExpenseTypeModal from "../../../common/ExpenseTypeActions/ExpenseTypeModal";
 import ExpenseTable from "../ExpenseValues/ExpenseTable";
-import EditExpenseModal from "../../../common/ExpensesActions/EditExpenseModal";
+import EditExpenseModal from "../../../common/ExpenseTypeActions/ExpenseTypeModal";
 import AddExpenseModal from "../../../common/ExpensesActions/AddExpenseModal";
 import ConfirmActionModal from "../../../common/ConfirmActionModal";
 
@@ -35,7 +34,6 @@ const ExpenseTypeDetails = () => {
     const [selectedExpense, setSelectedExpense] = React.useState(null);
     const [isSaveLoading, setIsSaveLoading] = React.useState(false);
 
-    const { mutateAsync: editExpenseTypeRequest } = useExpenseTypePut();
     const { mutateAsync: deleteExpenseRequest } = useExpenseDelete();
 
     const {
@@ -49,21 +47,6 @@ const ExpenseTypeDetails = () => {
         setIsEditModalOpen(false);
         setIsConfirmModalOpen(false);
         setSelectedExpense(null);
-    };
-
-    const handleSaveClick = async (name, category, recurrent, baseValue = 0) => {
-        const payload = {
-            'name': name,
-            'category': category,
-            'recurrent': recurrent,
-            'baseValue': baseValue
-        }
-        
-        await editExpenseTypeRequest({
-                id: expenseTypeData["expenseTypeId"], 
-                payload: payload
-            });
-        await reload();
     };
 
     const onClickEdit = (expense) => {
@@ -203,7 +186,7 @@ const ExpenseTypeDetails = () => {
             <ExpenseTypeModal 
                 isOpen={isModalOpen}
                 onClose={() => setIsModalOpen(false)}
-                onSaveClick={handleSaveClick}
+                reload={reload}
                 expenseType={expenseTypeData}
             />
         </>

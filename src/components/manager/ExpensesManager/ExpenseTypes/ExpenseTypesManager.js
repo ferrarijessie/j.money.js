@@ -7,15 +7,13 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 
 import { useExpenseTypes } from "../../../../hooks/expenseTypes/useExpenseTypes";
-import { useExpenseTypesPost } from "../../../../hooks/expenseTypes/useExpenseTypePost";
-import { useExpenseTypePut } from "../../../../hooks/expenseTypes/useExpenseTypePut";
 import { useExpenseTypeDelete } from "../../../../hooks/expenseTypes/useExpenseTypeDelete";
 
 import ConfirmActionModal from "../../../common/ConfirmActionModal";
 
 import ManagerSubPage from "../../ManagerSubPage";
 import ExpenseTypesTable from "./ExpenseTypesTable";
-import ExpenseTypeModal from "./ExpenseTypeModal";
+import ExpenseTypeModal from "../../../common/ExpenseTypeActions/ExpenseTypeModal";
 
 
 const ExpenseTypeManager = () => {
@@ -23,8 +21,6 @@ const ExpenseTypeManager = () => {
     const [isConfirmModalOpen, setIsConfirmModalOpen] = React.useState(false);
     const [selectedExpenseType, setSelectedExpenseType] = React.useState(null);
 
-    const { mutateAsync: addExpenseTypeRequest } = useExpenseTypesPost();
-    const { mutateAsync: editExpenseTypeRequest } = useExpenseTypePut();
     const { mutateAsync: deleteExpenseTypeRequest } = useExpenseTypeDelete();
 
     const {
@@ -38,27 +34,6 @@ const ExpenseTypeManager = () => {
         setIsModalOpen(false);
         setIsConfirmModalOpen(false);
         setSelectedExpenseType(null);
-    };
-
-    const handleSaveClick = async (name, category, recurrent, baseValue = 0) => {
-        const payload = {
-            'name': name,
-            'category': category,
-            'recurrent': recurrent,
-            'baseValue': baseValue
-        }
-
-        if (selectedExpenseType !== null) {
-            await editExpenseTypeRequest({
-                id: selectedExpenseType["expenseTypeId"], 
-                payload: payload
-            });
-        }
-        else {
-            await addExpenseTypeRequest(payload);
-        }
-        setSelectedExpenseType(null);
-        await reload();
     };
 
     const onClickEdit = (expenseType) => {
@@ -112,7 +87,7 @@ const ExpenseTypeManager = () => {
             <ExpenseTypeModal 
                 isOpen={isModalOpen}
                 onClose={onCloseModal}
-                onSaveClick={handleSaveClick}
+                reload={reload}
                 expenseType={selectedExpenseType}
             />
 

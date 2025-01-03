@@ -18,6 +18,9 @@ import { Input, SIZE as InputSize } from "baseui/input";
 import { FlexGrid, FlexGridItem } from "baseui/flex-grid";
 import { FormControl } from "baseui/form-control";
 
+import { useExpenseTypesPost } from "../../../hooks/expenseTypes/useExpenseTypePost";
+import { useExpenseTypePut } from "../../../hooks/expenseTypes/useExpenseTypePut";
+
 
 const gridOverrides = {
     marginTop: '15px'
@@ -33,16 +36,43 @@ const checkboxItemOverrides = {
 const ExpenseTypeModal = ({
     isOpen,
     onClose,
-    onSaveClick,
+    reload,
     expenseType = null
 }) => {
     
+    const [isLoading, setIsLoading] = React.useState(false);
     const [typeName, setTypeName] = React.useState("");
     const [category, setCategory] = React.useState("");
     const [recurrent, setRecurrent] = React.useState(false);
     const [baseValue, setBaseValue] = React.useState(0.00);
 
     const [formErrors, setFormErrors] = React.useState({});
+
+    const { mutateAsync: addExpenseTypeRequest } = useExpenseTypesPost();
+    const { mutateAsync: editExpenseTypeRequest } = useExpenseTypePut();
+
+    const onSaveClick = async (typeName, category, recurrent, baseValue = 0) => {
+        setIsLoading(true);
+
+        const payload = {
+            'name': typeName,
+            'category': category,
+            'recurrent': recurrent,
+            'baseValue': baseValue
+        }
+
+        if (expenseType !== null) {
+            await editExpenseTypeRequest({
+                id: expenseType["expenseTypeId"], 
+                payload: payload
+            });
+        }
+        else {
+            await addExpenseTypeRequest(payload);
+        }
+        await reload();
+        setIsLoading(false);
+    };
 
     const clearFields = () => {
         setFormErrors({});
@@ -213,7 +243,7 @@ const ExpenseTypeModal = ({
                 <ModalButton kind={ButtonKind.tertiary} onClick={handleClose}>
                     Cancel
                 </ModalButton>
-                <ModalButton type={'submit'} onClick={() => validateAndSave()}>
+                <ModalButton type={'submit'} onClick={() => validateAndSave()} isLoading={isLoading}>
                     Save
                 </ModalButton>
             </ModalFooter>
