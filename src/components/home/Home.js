@@ -4,7 +4,7 @@ import moment from "moment";
 import { useNavigate } from 'react-router-dom';
 
 import { Block } from "baseui/block";
-import { styled } from "baseui";
+import { styled } from "styletron-react";
 import { AppNavBar, setItemActive } from "baseui/app-nav-bar";
 import { Delete } from "baseui/icon";
 

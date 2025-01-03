@@ -12,7 +12,8 @@ const itemOverrides = {
         Block: {
             style: {
                 gap: '5px',
-                display: 'flex'
+                display: 'flex',
+                justifyContent: 'flex-end'
             }
         }
     }
@@ -65,7 +66,7 @@ const ExpenseTable = ({
 
     const expenseActions = (item) => {
         return (
-            <FlexGrid flexGridColumnCount={2}>
+            <FlexGrid flexGridColumnCount={1}>
                 <FlexGridItem {...itemOverrides}>
                     <Button 
                         size={SIZE.mini} onClick={() => onClickEdit(item)}

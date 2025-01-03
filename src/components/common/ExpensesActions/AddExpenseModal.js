@@ -24,12 +24,13 @@ const AddExpenseModal = ({
     onClose,
     onSaveClick,
     isLoading,
-    expenseTypes = []
+    expenseTypes = [],
+    expenseTypeInitial = null
 }) => {
     
     const [expenseType, setExpenseType] = React.useState("");
-    const [expenseTypeId, setExpenseTypeId] = React.useState(0);
-    const [value, setValue] = React.useState(0.00);
+    const [expenseTypeId, setExpenseTypeId] = React.useState(!!expenseTypeInitial ? expenseTypeInitial.expenseTypeId : 0);
+    const [value, setValue] = React.useState(!!expenseTypeInitial ? expenseTypeInitial.baseValue.toFixed(2) : 0.00);
     const [month, setMonth] = React.useState(1);
     const [year, setYear] = React.useState(2025);
 
@@ -42,7 +43,7 @@ const AddExpenseModal = ({
         setYear(2024);
     };
 
-    const options = expenseTypes.map(eType => ({
+    const options = expenseTypes?.map(eType => ({
         label: eType['name'],
         id: eType['expenseTypeId']
     }));
@@ -56,7 +57,7 @@ const AddExpenseModal = ({
         const requiredMessage = "This field is required"
         let errors = {}
 
-        if (expenseType === ""){
+        if (!expenseTypeInitial && expenseType === ""){
             errors["type"] = requiredMessage;
         }
         if (value <= 0) {
@@ -100,14 +101,22 @@ const AddExpenseModal = ({
                         label="Expense Type *"
                         error={"type" in formErrors ? formErrors["type"] : null}
                     >
-                        <Select
-                            value={expenseType}
-                            onChange={({ value }) => handleOptionchange(value)}
-                            options={options}
-                            size={InputSize.compact}
-                            labelKey="label"
-                            valueKey="id"
-                        />
+                        {!expenseTypeInitial ? 
+                            <Select
+                                value={expenseType}
+                                onChange={({ value }) => handleOptionchange(value)}
+                                options={options}
+                                size={InputSize.compact}
+                                labelKey="label"
+                                valueKey="id"
+                            />
+                        :
+                            <Input 
+                                value={expenseTypeInitial.name}
+                                disabled
+                                size={InputSize.compact}
+                            />
+                        }
                     </FormControl>
                     </FlexGridItem>
                     <FlexGridItem>

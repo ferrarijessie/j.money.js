@@ -1,10 +1,14 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
+
+import { EXPENSE_TYPES_MANAGER_PATH } from "../../../../AppPaths";
+
 import { Button, SIZE } from "baseui/button";
 import { FlexGrid, FlexGridItem } from "baseui/flex-grid";
 import { TableBuilder, TableBuilderColumn } from "baseui/table-semantic";
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPen, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faPen, faTrash, faEye } from '@fortawesome/free-solid-svg-icons';
 
 
 const itemOverrides = {
@@ -37,6 +41,9 @@ const ExpenseTypesTable = ({
     onClickEdit,
     onClickDelete
 }) => {
+
+    let navigate = useNavigate(); 
+
     const [sortColumn, setSortColumn] = React.useState("expenseTypeId");
     const [sortAsc, setSortAsc] = React.useState(true);
 
@@ -63,6 +70,11 @@ const ExpenseTypesTable = ({
         }
     };
 
+    const routeChange = (item) =>{ 
+        let path = `${EXPENSE_TYPES_MANAGER_PATH}/${item?.expenseTypeId}`; 
+        navigate(path);
+    }
+
     const expenseTypeActions = (item) => {
         return (
             <FlexGrid flexGridColumnCount={2}>
@@ -78,6 +90,12 @@ const ExpenseTypesTable = ({
                         startEnhancer={<FontAwesomeIcon icon={faTrash} />}
                     >
                         Delete
+                    </Button>
+                    <Button 
+                        size={SIZE.mini} onClick={() => routeChange(item)}
+                        startEnhancer={<FontAwesomeIcon icon={faEye} />}
+                    >
+                        View Details
                     </Button>
                 </FlexGridItem>
             </FlexGrid>
