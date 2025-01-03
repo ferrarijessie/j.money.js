@@ -1,7 +1,6 @@
 import React from "react";
 import { useParams } from 'react-router';
 
-import { Heading, HeadingLevel } from 'baseui/heading';
 import { FlexGrid, FlexGridItem } from "baseui/flex-grid";
 import { Button, SIZE } from "baseui/button";
 import { Tag, HIERARCHY } from "baseui/tag";
