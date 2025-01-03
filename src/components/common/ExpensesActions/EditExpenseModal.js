@@ -12,19 +12,37 @@ import { KIND as ButtonKind } from "baseui/button";
 import { Input, SIZE as InputSize } from "baseui/input";
 import { FormControl } from "baseui/form-control";
 
+import { useExpensePut } from "../../../hooks/expenses/useExpensePut";
+
 
 const EditExpenseModal = ({
     isOpen,
     onClose,
-    onSaveClick,
+    reload,
     expenseValue,
     expenseType,
-    isLoading
+    selectedExpense
 }) => {
     
     const [value, setValue] = React.useState(expenseValue);
+    const [isSaveLoading, setIsSaveLoading] = React.useState(false);
 
     const [formErrors, setFormErrors] = React.useState({});
+
+    const { mutateAsync: editExpenseRequest } = useExpensePut();
+
+    const onSaveClick = async (payload, id=null) => {
+        setIsSaveLoading(true);
+        const expenseId = !!selectedExpense ? selectedExpense['expenseId'] : id;
+
+        await editExpenseRequest({
+            id: expenseId, 
+            payload: payload
+        });
+        await reload();
+        setIsSaveLoading(false);
+        onClose();
+    };
 
     const clearFields = () => {
         setValue(0.00)
@@ -71,7 +89,7 @@ const EditExpenseModal = ({
                 <ModalButton kind={ButtonKind.tertiary} onClick={handleClose}>
                     Cancel
                 </ModalButton>
-                <ModalButton type={'submit'} onClick={() => validateAndSave()} isLoading={isLoading}>
+                <ModalButton type={'submit'} onClick={() => validateAndSave()} isLoading={isSaveLoading}>
                     Save
                 </ModalButton>
             </ModalFooter>

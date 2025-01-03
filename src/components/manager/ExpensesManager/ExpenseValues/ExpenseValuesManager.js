@@ -7,8 +7,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 
 import { useExpenses } from "../../../../hooks/expenses/useExpenses";
-import { useExpensePost } from "../../../../hooks/expenses/useExpensePost";
-import { useExpensePut } from "../../../../hooks/expenses/useExpensePut";
 import { useExpenseDelete } from "../../../../hooks/expenses/useExpenseDelete";
 import { useExpenseTypes } from "../../../../hooks/expenseTypes/useExpenseTypes";
 
@@ -27,8 +25,6 @@ const ExpenseManager = () => {
     const [selectedExpense, setSelectedExpense] = React.useState(null);
     const [isSaveLoading, setIsSaveLoading] = React.useState(false);
 
-    const { mutateAsync: addExpenseRequest } = useExpensePost();
-    const { mutateAsync: editExpenseRequest } = useExpensePut();
     const { mutateAsync: deleteExpenseRequest } = useExpenseDelete();
 
     const {
@@ -48,31 +44,6 @@ const ExpenseManager = () => {
         setSelectedExpense(null);
     };
 
-    const handleActionClick = async (payload, id=null) => {
-        setIsSaveLoading(true);
-        const expenseId = !!selectedExpense ? selectedExpense['expenseId'] : id;
-
-        await editExpenseRequest({
-            id: expenseId, 
-            payload: payload
-        });
-        await reload();
-        setIsSaveLoading(false);
-        setIsModalOpen(false);
-        setSelectedExpense(null);
-    };
-
-    const handleAddClick = async (typeId, value, month, year) => {
-        const payload = {
-            'year': year,
-            'month': month,
-            'typeId': typeId,
-            'value': value
-        };
-        await addExpenseRequest(payload);
-        await reload();
-    };
-
     const onClickEdit = (expense) => {
         setSelectedExpense(expense);
         setIsModalOpen(true);
@@ -84,9 +55,13 @@ const ExpenseManager = () => {
     };
 
     const onConfirmDelete = async () => {
+        setIsSaveLoading(true);
+
         await deleteExpenseRequest(selectedExpense["expenseId"]);
         await reload();
         onCloseModal();
+
+        setIsSaveLoading(false);
     };
 
     return (
@@ -127,10 +102,10 @@ const ExpenseManager = () => {
                     <EditExpenseModal 
                         isOpen={isModalOpen} 
                         onClose={onCloseModal} 
-                        onSaveClick={handleActionClick}
+                        reload={reload}
                         expenseValue={selectedExpense['value']}
                         expenseType={selectedExpense['type']} 
-                        isLoading={isSaveLoading}
+                        selectedExpense={selectedExpense}
                     />
 
                     <ConfirmActionModal 
@@ -147,7 +122,7 @@ const ExpenseManager = () => {
             <AddExpenseModal 
                 isOpen={isAddModalOpen}
                 onClose={onCloseModal}
-                onSaveClick={handleAddClick}
+                reload={reload}
                 expenseTypes={expenseTypesData}
                 isLoading={isSaveLoading}
             />

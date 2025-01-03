@@ -14,6 +14,8 @@ import { Input, SIZE as InputSize } from "baseui/input";
 import { FlexGrid, FlexGridItem } from "baseui/flex-grid";
 import { FormControl } from "baseui/form-control";
 
+import { useExpensePost } from "../../../hooks/expenses/useExpensePost"; 
+
 
 const gridOverrides = {
     marginTop: '15px'
@@ -22,12 +24,12 @@ const gridOverrides = {
 const AddExpenseModal = ({
     isOpen,
     onClose,
-    onSaveClick,
-    isLoading,
+    reload,
     expenseTypes = [],
     expenseTypeInitial = null
 }) => {
     
+    const [isLoading, setIsLoading] = React.useState(false);
     const [expenseType, setExpenseType] = React.useState("");
     const [expenseTypeId, setExpenseTypeId] = React.useState(!!expenseTypeInitial ? expenseTypeInitial.expenseTypeId : 0);
     const [value, setValue] = React.useState(!!expenseTypeInitial ? expenseTypeInitial.baseValue.toFixed(2) : 0.00);
@@ -35,6 +37,23 @@ const AddExpenseModal = ({
     const [year, setYear] = React.useState(2025);
 
     const [formErrors, setFormErrors] = React.useState({});
+
+    const { mutateAsync: addExpenseRequest } = useExpensePost();
+
+    const onSaveClick = async (typeId, value, month, year) => {
+        setIsLoading(true);
+
+        const payload = {
+            'year': year,
+            'month': month,
+            'typeId': typeId,
+            'value': value
+        };
+        await addExpenseRequest(payload);
+        await reload();
+
+        setIsLoading(false);
+    };
 
     const clearFields = () => {
         setExpenseType("");
@@ -85,13 +104,13 @@ const AddExpenseModal = ({
 
     return (
         <Modal
-        onClose={handleClose}
-        closeable
-        isOpen={isOpen}
-        animate
-        autoFocus
-        size={SIZE.default}
-        role={ROLE.dialog}
+            onClose={handleClose}
+            closeable
+            isOpen={isOpen}
+            animate
+            autoFocus
+            size={SIZE.default}
+            role={ROLE.dialog}
         >
             <ModalHeader>Add Expense</ModalHeader>
             <ModalBody>

@@ -13,8 +13,6 @@ import { faPencil, faPlus } from '@fortawesome/free-solid-svg-icons';
 
 import { useExpenseType } from "../../../../hooks/expenseTypes/useExpenseType";
 import { useExpenseTypePut } from "../../../../hooks/expenseTypes/useExpenseTypePut";
-import { useExpensePost } from "../../../../hooks/expenses/useExpensePost";
-import { useExpensePut } from "../../../../hooks/expenses/useExpensePut";
 import { useExpenseDelete } from "../../../../hooks/expenses/useExpenseDelete";
 
 import ManagerSubPage from "../../ManagerSubPage";
@@ -24,33 +22,8 @@ import EditExpenseModal from "../../../common/ExpensesActions/EditExpenseModal";
 import AddExpenseModal from "../../../common/ExpensesActions/AddExpenseModal";
 import ConfirmActionModal from "../../../common/ConfirmActionModal";
 
+import { buttonGridOverrides } from "../../common/overrides";
 
-const buttonGridOverrides = {
-    overrides: {
-        Block: {
-            style: {
-                display: 'flex',
-                alignSelf: 'flex-end',
-                justifyContent: 'flex-end',
-                paddingBottom: '3px',
-                columnGap: '5px'
-            }
-        }
-    }
-};
-
-const headingOverrides = {
-    marginBottom: '2px',
-};
-
-const headingGridOverrides = {
-    Block: {
-        style : {
-            borderBottom: '1px solid #eeeeee',
-            marginBottom: '5px',
-        }
-    }
-};
 
 const ExpenseTypeDetails = () => {
 
@@ -63,10 +36,7 @@ const ExpenseTypeDetails = () => {
     const [selectedExpense, setSelectedExpense] = React.useState(null);
     const [isSaveLoading, setIsSaveLoading] = React.useState(false);
 
-
     const { mutateAsync: editExpenseTypeRequest } = useExpenseTypePut();
-    const { mutateAsync: addExpenseRequest } = useExpensePost();
-    const { mutateAsync: editExpenseRequest } = useExpensePut();
     const { mutateAsync: deleteExpenseRequest } = useExpenseDelete();
 
     const {
@@ -97,31 +67,6 @@ const ExpenseTypeDetails = () => {
         await reload();
     };
 
-    const handleActionClick = async (payload, id=null) => {
-        setIsSaveLoading(true);
-        const expenseId = !!selectedExpense ? selectedExpense['expenseId'] : id;
-
-        await editExpenseRequest({
-            id: expenseId, 
-            payload: payload
-        });
-        await reload();
-        setIsSaveLoading(false);
-        setIsModalOpen(false);
-        setSelectedExpense(null);
-    };
-
-    const handleAddClick = async (typeId, value, month, year) => {
-        const payload = {
-            'year': year,
-            'month': month,
-            'typeId': typeId,
-            'value': value
-        };
-        await addExpenseRequest(payload);
-        await reload();
-    };
-
     const onClickEdit = (expense) => {
         setSelectedExpense(expense);
         setIsEditModalOpen(true);
@@ -133,9 +78,13 @@ const ExpenseTypeDetails = () => {
     };
 
     const onConfirmDelete = async () => {
+        setIsSaveLoading(true);
+
         await deleteExpenseRequest(selectedExpense["expenseId"]);
         await reload();
         onCloseModal();
+
+        setIsSaveLoading(false);
     };
 
     if (isLoading) {
@@ -165,18 +114,12 @@ const ExpenseTypeDetails = () => {
 
     return (
         <>
-            <ManagerSubPage activeItem={"Expenses"} activeSubItem={"Expense Types"}>
-                <FlexGrid flexGridColumnCount={2} overrides={headingGridOverrides}>
-                    <FlexGridItem>
-                        <HeadingLevel>
-                            <HeadingLevel>
-                                <HeadingLevel>
-                                    <Heading {...headingOverrides}>#{expenseTypeData.expenseTypeId} {expenseTypeData.name}</Heading>
-                                </HeadingLevel>
-                            </HeadingLevel>
-                        </HeadingLevel>
-                    </FlexGridItem>
-                    <FlexGridItem {...buttonGridOverrides}>
+            <ManagerSubPage 
+                activeItem={"Expenses"} 
+                activeSubItem={"Expense Types"}
+                pageTitle={`#${expenseTypeData.expenseTypeId} ${expenseTypeData.name}`}
+                actions={
+                    <>
                         <Button 
                             onClick={() => setIsModalOpen(true)}
                             startEnhancer={<FontAwesomeIcon icon={faPencil} />}
@@ -191,8 +134,9 @@ const ExpenseTypeDetails = () => {
                         >
                                 Add Value
                         </Button>
-                    </FlexGridItem>
-                </FlexGrid>
+                    </>
+                }
+            >
                 <FlexGrid>
                     <FlexGridItem>
                         <Tag 
@@ -232,10 +176,10 @@ const ExpenseTypeDetails = () => {
                     <EditExpenseModal 
                         isOpen={isEditModalOpen} 
                         onClose={onCloseModal} 
-                        onSaveClick={handleActionClick}
+                        reload={reload}
                         expenseValue={selectedExpense['value']}
                         expenseType={selectedExpense['type']} 
-                        isLoading={isSaveLoading}
+                        selectedExpense={selectedExpense}
                     />
 
                     <ConfirmActionModal 
@@ -252,10 +196,9 @@ const ExpenseTypeDetails = () => {
             <AddExpenseModal 
                 isOpen={isAddModalOpen}
                 onClose={onCloseModal}
-                onSaveClick={handleAddClick}
+                reload={reload}
                 expenseTypes={null}
                 expenseTypeInitial={expenseTypeData} 
-                isLoading={isSaveLoading}
             />
 
             <ExpenseTypeModal 
