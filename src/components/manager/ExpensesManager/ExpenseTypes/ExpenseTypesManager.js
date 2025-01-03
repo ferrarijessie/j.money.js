@@ -1,6 +1,6 @@
 import React from "react";
 import { Block } from "baseui/block";
-import { Button } from "baseui/button";
+import { Button, SIZE } from "baseui/button";
 import { Heading, HeadingLevel } from 'baseui/heading';
 import { Skeleton } from "baseui/skeleton";
 import { FlexGrid, FlexGridItem } from "baseui/flex-grid";
@@ -102,6 +102,7 @@ const ExpenseTypeManager = () => {
                         <Button 
                             onClick={() => setIsModalOpen(true)}
                             startEnhancer={<FontAwesomeIcon icon={faPlus} />}
+                            size={SIZE.compact}
                         >
                                 New
                         </Button>

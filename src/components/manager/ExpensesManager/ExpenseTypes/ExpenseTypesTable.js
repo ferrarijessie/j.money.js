@@ -16,7 +16,8 @@ const itemOverrides = {
         Block: {
             style: {
                 gap: '5px',
-                display: 'flex'
+                display: 'flex',
+                justifyContent: 'flex-end'
             }
         }
     }
@@ -77,7 +78,7 @@ const ExpenseTypesTable = ({
 
     const expenseTypeActions = (item) => {
         return (
-            <FlexGrid flexGridColumnCount={2}>
+            <FlexGrid flexGridColumnCount={1}>
                 <FlexGridItem {...itemOverrides}>
                     <Button 
                         size={SIZE.mini} onClick={() => onClickEdit(item)}
@@ -122,7 +123,7 @@ const ExpenseTypesTable = ({
             <TableBuilderColumn id="baseValue" header="Base Value" sortable>
                 {(row) => row["baseValue"] ? `R$ ${row["baseValue"].toFixed(2)}` : "-"}
             </TableBuilderColumn>
-            <TableBuilderColumn id="actions" header="Actions">
+            <TableBuilderColumn id="actions">
                 {(row) => expenseTypeActions(row)}
             </TableBuilderColumn>
         </TableBuilder>
