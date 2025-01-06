@@ -15,7 +15,7 @@ import {
 
 
 const ContainerUI = styled(Block, {
-    padding: "30px 310px"
+    padding: "30px 90px"
 });
 
 

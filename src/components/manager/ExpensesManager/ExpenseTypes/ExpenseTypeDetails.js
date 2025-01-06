@@ -3,9 +3,10 @@ import { useParams } from 'react-router';
 
 import { FlexGrid, FlexGridItem } from "baseui/flex-grid";
 import { Button, SIZE } from "baseui/button";
-import { Tag, HIERARCHY } from "baseui/tag";
 import { Skeleton } from "baseui/skeleton";
 import { Block } from "baseui/block";
+
+import { ParagraphMedium } from "baseui/typography";
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPencil, faPlus } from '@fortawesome/free-solid-svg-icons';
@@ -20,7 +21,13 @@ import EditExpenseModal from "../../../common/ExpenseTypeActions/ExpenseTypeModa
 import AddExpenseModal from "../../../common/ExpensesActions/AddExpenseModal";
 import ConfirmActionModal from "../../../common/ConfirmActionModal";
 
-import { buttonGridOverrides } from "../../common/overrides";
+import { 
+    buttonGridOverrides,
+    detailsGridOverrides, 
+    detailsAttributesGridOverrides,
+} from "../../common/overrides";
+
+import { DetailsLabelText } from "../../common/styled";
 
 
 const ExpenseTypeDetails = () => {
@@ -119,37 +126,32 @@ const ExpenseTypeDetails = () => {
                     </>
                 }
             >
-                <FlexGrid>
-                    <FlexGridItem>
-                        <Tag 
-                            closeable={false}
-                            hierarchy={HIERARCHY.primary}
-                        >
-                            {expenseTypeData.category.toLowerCase()}
-                        </Tag>
-                        <Tag 
-                            closeable={false}
-                            hierarchy={HIERARCHY.primary}
-                        >
-                            {expenseTypeData.recurrent ? 'recurrent' : 'non-recurrent'}
-                        </Tag>
-                        {expenseTypeData.recurrent &&
-                            <Tag 
-                            closeable={false}
-                            hierarchy={HIERARCHY.primary}
-                        >
-                            R$ {expenseTypeData.baseValue.toFixed(2)}
-                        </Tag>
-                        }
-                    </FlexGridItem>
-                </FlexGrid>
 
                 <Block>
-                    <ExpenseTable 
-                        data={expenseTypeData.expenseValues} 
-                        onClickEdit={onClickEdit} 
-                        onClickDelete={onClickDelete} 
-                    />
+                    <FlexGrid flexGridColumnCount={2}>
+                        <FlexGridItem {...detailsGridOverrides}>
+                            <FlexGrid flexGridColumnCount={2}>
+                                <FlexGridItem>
+                                    <DetailsLabelText>Category:</DetailsLabelText>
+                                    <DetailsLabelText>Recurrent:</DetailsLabelText>
+                                    {!!expenseTypeData.recurrent && <DetailsLabelText>Base Value:</DetailsLabelText>}
+                                </FlexGridItem>
+                                <FlexGridItem {...detailsAttributesGridOverrides}>
+                                    <ParagraphMedium>{expenseTypeData.category.toUpperCase()}</ParagraphMedium>
+                                    <ParagraphMedium>{expenseTypeData.recurrent ? 'Yes' : 'No'}</ParagraphMedium>
+                                    {!!expenseTypeData.recurrent && <ParagraphMedium>R$ {expenseTypeData.baseValue.toFixed(2)}</ParagraphMedium>}
+                                </FlexGridItem>
+                            </FlexGrid>
+                        </FlexGridItem>
+                        <FlexGridItem>
+                            <ExpenseTable 
+                                data={expenseTypeData.expenseValues} 
+                                onClickEdit={onClickEdit} 
+                                onClickDelete={onClickDelete} 
+                            />
+                        </FlexGridItem>
+                    </FlexGrid>
+                    
                 </Block>
             </ManagerSubPage>
 
