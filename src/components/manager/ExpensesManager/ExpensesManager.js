@@ -7,17 +7,8 @@ import ManagerSubPage from "../ManagerSubPage";
 
 const ExpenseManager = () => {
     return (
-        <ManagerSubPage activeItem={"Expenses"}>
-            <HeadingLevel>
-                <HeadingLevel>
-                 <HeadingLevel>
-                    <Heading>Expenses Manager</Heading>
-                    <ParagraphSmall>
-                        This is where you can manage all your Expense Data!
-                    </ParagraphSmall>
-                    </HeadingLevel>
-                </HeadingLevel>
-            </HeadingLevel>
+        <ManagerSubPage activeItem={"Expenses"} pageTitle={"Expenses Manager"}>
+            
         </ManagerSubPage>
     );
 };
