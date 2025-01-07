@@ -4,7 +4,9 @@ import { FlexGrid, FlexGridItem } from "baseui/flex-grid";
 import { TableBuilder, TableBuilderColumn } from "baseui/table-semantic";
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPen, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faPen, faTrash, faCheck, faXmark } from '@fortawesome/free-solid-svg-icons';
+
+import { useExpensePut } from "../../../../hooks/expenses/useExpensePut";
 
 
 const itemOverrides = {
@@ -36,10 +38,13 @@ const overrides = {
 const ExpenseTable = ({
     data,
     onClickEdit,
-    onClickDelete
+    onClickDelete,
+    reload
 }) => {
     const [sortColumn, setSortColumn] = React.useState("expenseId");
     const [sortAsc, setSortAsc] = React.useState(true);
+
+    const { mutateAsync: editExpenseRequest } = useExpensePut();
 
     const sortedData = React.useMemo(() => {
         return data.slice().sort((a, b) => {
@@ -64,6 +69,18 @@ const ExpenseTable = ({
         }
     };
 
+    const handleEditStatus = async (item) => {
+        const expenseId = item.expenseId;
+
+        await editExpenseRequest({
+            id: expenseId, 
+            payload: {
+                'paid': item.paid ? false : true
+            }
+        });
+        await reload();
+    };
+
     const expenseActions = (item) => {
         return (
             <FlexGrid flexGridColumnCount={1}>
@@ -79,6 +96,12 @@ const ExpenseTable = ({
                         startEnhancer={<FontAwesomeIcon icon={faTrash} />}
                     >
                         Delete
+                    </Button>
+                    <Button 
+                        size={SIZE.mini} onClick={() => handleEditStatus(item)}
+                        startEnhancer={<FontAwesomeIcon icon={item.paid ? faXmark : faCheck} />}
+                    >
+                        Mark as {!!item.paid ? 'Unaid' : 'Paid'}
                     </Button>
                 </FlexGridItem>
             </FlexGrid>

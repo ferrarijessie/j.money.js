@@ -148,6 +148,7 @@ const ExpenseTypeDetails = () => {
                                 data={expenseTypeData.expenseValues} 
                                 onClickEdit={onClickEdit} 
                                 onClickDelete={onClickDelete} 
+                                reload={reload}
                             />
                         </FlexGridItem>
                     </FlexGrid>

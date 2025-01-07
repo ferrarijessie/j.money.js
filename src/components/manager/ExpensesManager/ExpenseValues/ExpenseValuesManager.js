@@ -91,7 +91,12 @@ const ExpenseManager = () => {
                         />
                     }
                     {data.length > 0 &&
-                        <ExpenseTable data={data} onClickEdit={onClickEdit} onClickDelete={onClickDelete} />
+                        <ExpenseTable 
+                            data={data} 
+                            onClickEdit={onClickEdit} 
+                            onClickDelete={onClickDelete} 
+                            reload={reload}
+                        />
                     }
                 </Block>
 
