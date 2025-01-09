@@ -4,6 +4,7 @@ import ManagerSubPage from "./ManagerSubPage";
 
 
 const Manager = () => {
+
     return (
         <ManagerSubPage pageTitle="Manager">
             

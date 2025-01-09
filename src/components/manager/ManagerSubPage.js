@@ -1,52 +1,149 @@
 import React from "react";
 
+import { useNavigate } from 'react-router-dom';
+
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faHouse, faGear } from '@fortawesome/free-solid-svg-icons';
+
+import { Navigation } from "baseui/side-navigation";
 import { Block } from "baseui/block";
 import { Heading, HeadingLevel } from 'baseui/heading';
 import { FlexGrid, FlexGridItem } from "baseui/flex-grid";
 import { styled } from "styletron-react";
 
-import Navigation from "./Navigation";
+import { 
+    EXPENSES_MANAGER_PATH, EXPENSE_TYPES_MANAGER_PATH, EXPENSE_VALUES_MANAGER_PATH,
+    INCOMES_MANAGER_PATH, INCOME_TYPES_MANAGER_PATH, INCOME_VALUES_MANAGER_PATH,
+    SAVINGS_MANAGER_PATH, SAVING_TYPES_MANGER_PATH, SAVING_VALUES_MANAGER_PATH
+} from "../../AppPaths";
+
+import AppNavigation from "./AppNavigation";
+
 
 import { 
     headingOverrides,
     headingGridOverrides,
-    buttonGridOverrides 
+    subHeadingOverrides,
+    subHeadingGridOverrides,
+    buttonGridOverrides,
+    sideMenuGridOverrides,
+    childrenGridOverrides,
 } from "./common/overrides";
 
 
 const ContainerUI = styled(Block, {
-    padding: "30px 90px"
+    padding: "0px",
 });
 
 
 const ManagerSubPage = ({
     children,
     activeItem = null,
-    activeSubItem= null,
-    pageTitle="Page Title",
-    actions=null
+    actions=null,
+    itemTitle=""
 }) => {
+    const navigate = useNavigate();
+
+    const [activeItemId, setActiveItemId] = React.useState(activeItem);
+
     return (
         <>
-            <Navigation activeItem={activeItem} activeSubItem={activeSubItem} />
-
-            <ContainerUI>
-                <FlexGrid flexGridColumnCount={2} {...headingGridOverrides}>
-                    <FlexGridItem>
+            <AppNavigation />
+            
+            <FlexGrid {...headingGridOverrides}>
+                <FlexGridItem>
+                    <HeadingLevel>
                         <HeadingLevel>
                             <HeadingLevel>
-                                <HeadingLevel>
-                                    <Heading {...headingOverrides}>{pageTitle}</Heading>
-                                </HeadingLevel>
+                                <Heading {...headingOverrides}>
+                                    <FontAwesomeIcon transform="left-4" icon={faGear} />
+                                    Manager
+                                </Heading>
                             </HeadingLevel>
                         </HeadingLevel>
-                    </FlexGridItem>
-                    <FlexGridItem {...buttonGridOverrides}>
-                        {actions}
-                    </FlexGridItem>
-                </FlexGrid>
+                    </HeadingLevel>
+                </FlexGridItem>
+            </FlexGrid>
 
-                {children}
+            <ContainerUI>
+                <FlexGrid flexGridColumnCount={2}>
+                    <FlexGridItem {...sideMenuGridOverrides}>
+                    <Navigation
+                        items={[
+                            {
+                                title: "Expenses",
+                                itemId: `${EXPENSES_MANAGER_PATH}`,
+                                subNav: [
+                                    {
+                                    title: "Expense Types",
+                                    itemId: `${EXPENSE_TYPES_MANAGER_PATH}`
+                                    },
+                                    {
+                                    title: "Expense Values",
+                                    itemId: `${EXPENSE_VALUES_MANAGER_PATH}`,
+                                    }
+                                ]
+                            },
+                            {
+                                title: "Incomes",
+                                itemId: `${INCOMES_MANAGER_PATH}`,
+                                subNav: [
+                                    {
+                                    title: "Income Types",
+                                    itemId: `${INCOME_TYPES_MANAGER_PATH}`
+                                    },
+                                    {
+                                    title: "Income Values",
+                                    itemId: `${INCOME_VALUES_MANAGER_PATH}`,
+                                    }
+                                ]
+                            },
+                            {
+                                title: "Savings",
+                                itemId: `${SAVINGS_MANAGER_PATH}`,
+                                subNav: [
+                                    {
+                                    title: "Saving Types",
+                                    itemId: `${SAVING_TYPES_MANGER_PATH}`
+                                    },
+                                    {
+                                    title: "Saving Values",
+                                    itemId: `${SAVING_VALUES_MANAGER_PATH}`,
+                                    }
+                                ]
+                            }
+                        ]}
+                        activeItemId={activeItemId}
+                        onChange={({ event, item }) => {
+                            // prevent page reload
+                            event.preventDefault();
+                            setActiveItemId(item?.itemId);
+                            navigate(item?.itemId);
+                        }}
+                        />
+                    </FlexGridItem>
+                    {!!children && 
+                        <FlexGridItem {...childrenGridOverrides}>  
+                            <FlexGrid flexGridColumnCount={2} {...subHeadingGridOverrides}>
+                                <FlexGridItem>
+                                    <HeadingLevel>
+                                        <HeadingLevel>
+                                            <HeadingLevel>
+                                                <HeadingLevel>
+                                                    <Heading {...subHeadingOverrides}>{itemTitle}</Heading>
+                                                </HeadingLevel>
+                                            </HeadingLevel>
+                                        </HeadingLevel>
+                                    </HeadingLevel>
+                                </FlexGridItem>
+                                <FlexGridItem {...buttonGridOverrides}>
+                                    {actions}
+                                </FlexGridItem>
+                            </FlexGrid>
+                            {children}
+                        </FlexGridItem>     
+                    }
+                </FlexGrid>
             </ContainerUI>
         </>
     );

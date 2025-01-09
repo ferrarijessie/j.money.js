@@ -1,13 +1,16 @@
 import React from "react";
-import { Heading, HeadingLevel } from 'baseui/heading';
-import { ParagraphSmall } from 'baseui/typography';
+
+import { EXPENSES_MANAGER_PATH } from "../../../AppPaths";
 
 import ManagerSubPage from "../ManagerSubPage";
 
 
 const ExpenseManager = () => {
     return (
-        <ManagerSubPage activeItem={"Expenses"} pageTitle={"Expenses Manager"}>
+        <ManagerSubPage 
+            activeItem={EXPENSES_MANAGER_PATH}
+            itemTitle={"Expenses"}
+        >
             
         </ManagerSubPage>
     );

@@ -9,11 +9,14 @@ import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { useExpenseTypes } from "../../../../hooks/expenseTypes/useExpenseTypes";
 import { useExpenseTypeDelete } from "../../../../hooks/expenseTypes/useExpenseTypeDelete";
 
+import { EXPENSE_TYPES_MANAGER_PATH } from "../../../../AppPaths";
+
+import ExpenseTypeModal from "../../../common/ExpenseTypeActions/ExpenseTypeModal";
 import ConfirmActionModal from "../../../common/ConfirmActionModal";
 
 import ManagerSubPage from "../../ManagerSubPage";
+
 import ExpenseTypesTable from "./ExpenseTypesTable";
-import ExpenseTypeModal from "../../../common/ExpenseTypeActions/ExpenseTypeModal";
 
 
 const ExpenseTypeManager = () => {
@@ -55,9 +58,8 @@ const ExpenseTypeManager = () => {
     return (
         <>
             <ManagerSubPage 
-                activeItem={"Expenses"} 
-                activeSubItem={"Expense Types"}
-                pageTitle={"Expense Types Manager"}
+                activeItem={EXPENSE_TYPES_MANAGER_PATH} 
+                itemTitle={"Expense Types"}
                 actions={
                     <Button 
                         onClick={() => setIsModalOpen(true)}

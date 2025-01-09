@@ -6,16 +6,18 @@ import { Skeleton } from "baseui/skeleton";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 
+import { EXPENSE_VALUES_MANAGER_PATH } from "../../../../AppPaths";
+
 import { useExpenses } from "../../../../hooks/expenses/useExpenses";
 import { useExpenseDelete } from "../../../../hooks/expenses/useExpenseDelete";
 import { useExpenseTypes } from "../../../../hooks/expenseTypes/useExpenseTypes";
 
+import AddExpenseModal from "../../../common/ExpensesActions/AddExpenseModal";
+import EditExpenseModal from "../../../common/ExpensesActions/EditExpenseModal";
 import ConfirmActionModal from "../../../common/ConfirmActionModal";
 
 import ManagerSubPage from "../../ManagerSubPage";
 import ExpenseTable from "./ExpenseTable";
-import AddExpenseModal from "../../../common/ExpensesActions/AddExpenseModal";
-import EditExpenseModal from "../../../common/ExpensesActions/EditExpenseModal";
 
 
 const ExpenseManager = () => {
@@ -67,9 +69,8 @@ const ExpenseManager = () => {
     return (
         <>
             <ManagerSubPage 
-                activeItem={"Expenses"} 
-                activeSubItem={"Expense Values"}
-                pageTitle={"Expense Values Manager"}
+                activeItem={EXPENSE_VALUES_MANAGER_PATH} 
+                itemTitle={"Expense Values"}
                 actions={
                     <Button 
                         onClick={() => setIsAddModalOpen(true)}

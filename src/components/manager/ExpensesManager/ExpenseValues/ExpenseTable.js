@@ -43,11 +43,12 @@ const ExpenseTable = ({
 }) => {
     const [sortColumn, setSortColumn] = React.useState("expenseId");
     const [sortAsc, setSortAsc] = React.useState(true);
+    const [filteredData, setFilteredData] = React.useState(data);
 
     const { mutateAsync: editExpenseRequest } = useExpensePut();
 
     const sortedData = React.useMemo(() => {
-        return data.slice().sort((a, b) => {
+        return filteredData.slice().sort((a, b) => {
           const left = sortAsc ? a : b;
           const right = sortAsc ? b : a;
           const leftValue = String(left[sortColumn]);
@@ -58,7 +59,7 @@ const ExpenseTable = ({
             sensitivity: "base",
           });
         });
-    }, [sortColumn, sortAsc, data]);
+    }, [sortColumn, sortAsc, filteredData]);
 
     function handleSort(id) {
         if (id === sortColumn) {

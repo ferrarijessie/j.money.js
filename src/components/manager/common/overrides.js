@@ -6,17 +6,32 @@ export const buttonGridOverrides = {
                 alignSelf: 'flex-end',
                 justifyContent: 'flex-end',
                 paddingBottom: '5px',
-                columnGap: '5px'
             }
         }
     }
 };
 
 export const headingOverrides = {
+    marginBottom: '15px',
+    marginTop: '15px',
+};
+
+export const subHeadingOverrides = {
     marginBottom: '5px',
 };
 
 export const headingGridOverrides = {
+    overrides: {
+        Block: {
+            style : {
+                borderBottom: '1px solid #eeeeee',
+                padding: '0px 30px',
+            }
+        }
+    }
+};
+
+export const subHeadingGridOverrides = {
     overrides: {
         Block: {
             style : {
@@ -46,6 +61,28 @@ export const detailsAttributesGridOverrides = {
         Block: {
             style: {
                textAlign: 'right',
+            }
+        }
+    }
+};
+
+export const sideMenuGridOverrides = {
+    overrides: {
+        Block: {
+            style : {
+                width: '230px',
+                flexGrow: 'inherit',
+                borderRight: '1px solid #eeeeee',
+            }
+        }
+    }
+};
+
+export const childrenGridOverrides = {
+    overrides: {
+        Block: {
+            style : {
+                padding: '0px 20px',
             }
         }
     }
