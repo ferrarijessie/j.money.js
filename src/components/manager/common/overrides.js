@@ -6,6 +6,7 @@ export const buttonGridOverrides = {
                 alignSelf: 'flex-end',
                 justifyContent: 'flex-end',
                 paddingBottom: '5px',
+                gap: '10px'
             }
         }
     }

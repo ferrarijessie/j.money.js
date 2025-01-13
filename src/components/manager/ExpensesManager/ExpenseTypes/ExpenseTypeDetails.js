@@ -14,6 +14,8 @@ import { faPencil, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { useExpenseType } from "../../../../hooks/expenseTypes/useExpenseType";
 import { useExpenseDelete } from "../../../../hooks/expenses/useExpenseDelete";
 
+import { EXPENSE_TYPES_MANAGER_PATH } from "../../../../AppPaths";
+
 import ManagerSubPage from "../../ManagerSubPage";
 import ExpenseTypeModal from "../../../common/ExpenseTypeActions/ExpenseTypeModal";
 import ExpenseTable from "../ExpenseValues/ExpenseTable";
@@ -78,7 +80,9 @@ const ExpenseTypeDetails = () => {
 
     if (isLoading) {
         return (
-            <ManagerSubPage activeItem={"Expenses"} activeSubItem={"Expense Types"}>
+            <ManagerSubPage 
+                activeItem={EXPENSE_TYPES_MANAGER_PATH} 
+            >
                 <FlexGrid flexGridColumnCount={2}>
                     <FlexGridItem>
                         <Skeleton
@@ -104,9 +108,8 @@ const ExpenseTypeDetails = () => {
     return (
         <>
             <ManagerSubPage 
-                activeItem={"Expenses"} 
-                activeSubItem={"Expense Types"}
-                pageTitle={`#${expenseTypeData.expenseTypeId} ${expenseTypeData.name}`}
+                activeItem={EXPENSE_TYPES_MANAGER_PATH} 
+                itemTitle={`#${expenseTypeData.expenseTypeId} ${expenseTypeData.name}`}
                 actions={
                     <>
                         <Button 
