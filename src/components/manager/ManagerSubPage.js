@@ -32,7 +32,7 @@ import {
 
 
 const ContainerUI = styled(Block, {
-    padding: "0px",
+    padding: "0px 160px",
 });
 
 
@@ -49,23 +49,23 @@ const ManagerSubPage = ({
     return (
         <>
             <AppNavigation />
-            
-            <FlexGrid {...headingGridOverrides}>
-                <FlexGridItem>
-                    <HeadingLevel>
-                        <HeadingLevel>
-                            <HeadingLevel>
-                                <Heading {...headingOverrides}>
-                                    <FontAwesomeIcon transform="left-4" icon={faGear} />
-                                    Manager
-                                </Heading>
-                            </HeadingLevel>
-                        </HeadingLevel>
-                    </HeadingLevel>
-                </FlexGridItem>
-            </FlexGrid>
 
             <ContainerUI>
+                <FlexGrid {...headingGridOverrides}>
+                    <FlexGridItem>
+                        <HeadingLevel>
+                            <HeadingLevel>
+                                <HeadingLevel>
+                                    <Heading {...headingOverrides}>
+                                        <FontAwesomeIcon transform="left-4" icon={faGear} />
+                                        Manager
+                                    </Heading>
+                                </HeadingLevel>
+                            </HeadingLevel>
+                        </HeadingLevel>
+                    </FlexGridItem>
+                </FlexGrid>
+
                 <FlexGrid flexGridColumnCount={2}>
                     <FlexGridItem {...sideMenuGridOverrides}>
                     <Navigation

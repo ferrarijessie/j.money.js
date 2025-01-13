@@ -25,7 +25,7 @@ export const headingGridOverrides = {
         Block: {
             style : {
                 borderBottom: '1px solid #eeeeee',
-                padding: '0px 30px',
+                padding: '0px 15px',
             }
         }
     }
@@ -73,6 +73,7 @@ export const sideMenuGridOverrides = {
                 width: '230px',
                 flexGrow: 'inherit',
                 borderRight: '1px solid #eeeeee',
+                borderLeft: '1px solid #eeeeee',
             }
         }
     }
@@ -83,6 +84,7 @@ export const childrenGridOverrides = {
         Block: {
             style : {
                 padding: '0px 20px',
+                borderRight: '1px solid #eeeeee',
             }
         }
     }
