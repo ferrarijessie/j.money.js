@@ -2,16 +2,16 @@ import React from "react";
 import moment from "moment";
 
 import { useNavigate } from 'react-router-dom';
+import { setItemActive } from "baseui/app-nav-bar";
 
 import { Block } from "baseui/block";
 import { styled } from "styletron-react";
-import { AppNavBar, setItemActive } from "baseui/app-nav-bar";
 import { Delete } from "baseui/icon";
 
 import { useExpensesList } from "../../hooks/expenses/useExpensesList";
 import { useIncomesList } from "../../hooks/incomes/useIncomesList";
 
-import UserItems from "../common/UserItems";
+import AppNavigation from "../common/AppNavigation";
 
 
 
@@ -111,14 +111,9 @@ const Home = () => {
 
     return (
         <>
-            <AppNavBar
-                title="Finances Management"
-                mainItems={mainItems}
-                onMainItemSelect={item => selectMonth(item)}
-                username="Jessica Ferrari"
-                usernameSubtitle="the creator"
-                userItems={UserItems()}
-                onUserItemSelect={item => navigate(item.url)}
+            <AppNavigation 
+                mainItems={mainItems} 
+                onMainItemSelect={item => selectMonth(item)} 
             />
 
             <ContainerUI>

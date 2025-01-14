@@ -8,7 +8,10 @@ import { AppNavBar } from "baseui/app-nav-bar";
 import UserItems from "../common/UserItems";
 
 
-const AppNavigation = () => {
+const AppNavigation = ({
+    mainItems=[],
+    onMainItemSelect=null
+}) => {
     const navigate = useNavigate();
     
     return (
@@ -19,6 +22,8 @@ const AppNavigation = () => {
                 usernameSubtitle="the creator"
                 userItems={UserItems()}
                 onUserItemSelect={item => navigate(item.url)}
+                mainItems={mainItems}
+                onMainItemSelect={onMainItemSelect}
             />
         </ThemeProvider>
         
