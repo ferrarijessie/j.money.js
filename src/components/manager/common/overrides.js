@@ -75,6 +75,7 @@ export const sideMenuGridOverrides = {
                 flexGrow: 'inherit',
                 borderRight: '1px solid #eeeeee',
                 borderLeft: '1px solid #eeeeee',
+                borderBottom: '1px solid #eeeeee',
             }
         }
     }
@@ -86,6 +87,17 @@ export const childrenGridOverrides = {
             style : {
                 padding: '0px 20px',
                 borderRight: '1px solid #eeeeee',
+                borderBottom: '1px solid #eeeeee',
+            }
+        }
+    }
+};
+
+export const bodyGridOverrides = {
+    overrides: {
+        Block: {
+            style : {
+                height: '100%'
             }
         }
     }

@@ -3,7 +3,7 @@ import React from "react";
 import { useNavigate } from 'react-router-dom';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faHouse, faGear } from '@fortawesome/free-solid-svg-icons';
+import { faGear } from '@fortawesome/free-solid-svg-icons';
 
 import { Navigation } from "baseui/side-navigation";
 import { Block } from "baseui/block";
@@ -17,8 +17,8 @@ import {
     SAVINGS_MANAGER_PATH, SAVING_TYPES_MANGER_PATH, SAVING_VALUES_MANAGER_PATH
 } from "../../AppPaths";
 
-import AppNavigation from "./AppNavigation";
-
+import AppNavigation from "../common/AppNavigation";
+import Footer from "../common/Footer";
 
 import { 
     headingOverrides,
@@ -28,6 +28,7 @@ import {
     buttonGridOverrides,
     sideMenuGridOverrides,
     childrenGridOverrides,
+    bodyGridOverrides,
 } from "./common/overrides";
 
 
@@ -66,7 +67,7 @@ const ManagerSubPage = ({
                     </FlexGridItem>
                 </FlexGrid>
 
-                <FlexGrid flexGridColumnCount={2}>
+                <FlexGrid flexGridColumnCount={2} {...bodyGridOverrides} >
                     <FlexGridItem {...sideMenuGridOverrides}>
                     <Navigation
                         items={[
@@ -122,8 +123,8 @@ const ManagerSubPage = ({
                         }}
                         />
                     </FlexGridItem>
-                    {!!children && 
-                        <FlexGridItem {...childrenGridOverrides}>  
+                    <FlexGridItem {...childrenGridOverrides}>  
+                        {!!children && 
                             <FlexGrid flexGridColumnCount={2} {...subHeadingGridOverrides}>
                                 <FlexGridItem>
                                     <HeadingLevel>
@@ -140,11 +141,13 @@ const ManagerSubPage = ({
                                     {actions}
                                 </FlexGridItem>
                             </FlexGrid>
-                            {children}
-                        </FlexGridItem>     
-                    }
+                        }
+                        {children}
+                    </FlexGridItem>     
                 </FlexGrid>
             </ContainerUI>
+
+            <Footer />
         </>
     );
 };
