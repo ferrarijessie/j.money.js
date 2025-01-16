@@ -80,7 +80,11 @@ const ExpenseTypeManager = () => {
                         />
                     }
                     {data.length > 0 &&
-                        <ExpenseTypesTable data={data} onClickEdit={onClickEdit} onClickDelete={onClickDelete} />
+                        <ExpenseTypesTable 
+                            data={data} 
+                            onClickEdit={onClickEdit} 
+                            onClickDelete={onClickDelete} 
+                        />
                     }
                 </Block>
                 

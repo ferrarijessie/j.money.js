@@ -39,16 +39,13 @@ const ExpenseTable = ({
     data,
     onClickEdit,
     onClickDelete,
-    reload
+    onClickStatus,
 }) => {
     const [sortColumn, setSortColumn] = React.useState("expenseId");
     const [sortAsc, setSortAsc] = React.useState(true);
-    const [filteredData, setFilteredData] = React.useState(data);
-
-    const { mutateAsync: editExpenseRequest } = useExpensePut();
 
     const sortedData = React.useMemo(() => {
-        return filteredData.slice().sort((a, b) => {
+        return data.slice().sort((a, b) => {
           const left = sortAsc ? a : b;
           const right = sortAsc ? b : a;
           const leftValue = String(left[sortColumn]);
@@ -59,7 +56,7 @@ const ExpenseTable = ({
             sensitivity: "base",
           });
         });
-    }, [sortColumn, sortAsc, filteredData]);
+    }, [sortColumn, sortAsc, data]);
 
     function handleSort(id) {
         if (id === sortColumn) {
@@ -68,18 +65,6 @@ const ExpenseTable = ({
           setSortColumn(id);
           setSortAsc(true);
         }
-    };
-
-    const handleEditStatus = async (item) => {
-        const expenseId = item.expenseId;
-
-        await editExpenseRequest({
-            id: expenseId, 
-            payload: {
-                'paid': item.paid ? false : true
-            }
-        });
-        await reload();
     };
 
     const expenseActions = (item) => {
@@ -99,7 +84,7 @@ const ExpenseTable = ({
                         Delete
                     </Button>
                     <Button 
-                        size={SIZE.mini} onClick={() => handleEditStatus(item)}
+                        size={SIZE.mini} onClick={() => onClickStatus(item)}
                         startEnhancer={<FontAwesomeIcon icon={item.paid ? faXmark : faCheck} />}
                     >
                         Mark as {!!item.paid ? 'Unaid' : 'Paid'}
