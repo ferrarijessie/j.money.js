@@ -103,7 +103,7 @@ const ExpenseTypeManager = () => {
                     onClose={onCloseModal}
                     onConfirmClick={onConfirmDelete}
                     title="Delete Expense Type"
-                    content={`Are you sure you want to delete Expense Type #${selectedExpenseType["expenseTypeId"]} - ${selectedExpenseType["name"]}?`}
+                    content={`Are you sure you want to delete Expense Type #${selectedExpenseType["expenseTypeId"]} - ${selectedExpenseType["name"]} and all the expenses attached to it?`}
                 />
             }
         </>
