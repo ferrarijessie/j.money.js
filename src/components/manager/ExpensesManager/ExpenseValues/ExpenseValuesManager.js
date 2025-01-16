@@ -19,6 +19,7 @@ import ConfirmActionModal from "../../../common/ConfirmActionModal";
 
 import ManagerSubPage from "../../ManagerSubPage";
 import ExpenseTable from "./ExpenseTable";
+import BlankState from "../../common/BlankState";
 
 
 const ExpenseManager = () => {
@@ -105,13 +106,15 @@ const ExpenseManager = () => {
                             animation
                         />
                     }
-                    {data.length > 0 &&
+                    {data.length > 0 ?
                         <ExpenseTable 
                             data={data} 
                             onClickEdit={onClickEdit} 
                             onClickDelete={onClickDelete} 
                             onClickStatus={onClickStatus}
                         />
+                    :
+                        <BlankState />
                     }
                 </Block>
 

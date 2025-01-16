@@ -17,6 +17,7 @@ import ConfirmActionModal from "../../../common/ConfirmActionModal";
 import ManagerSubPage from "../../ManagerSubPage";
 
 import ExpenseTypesTable from "./ExpenseTypesTable";
+import BlankState from "../../common/BlankState";
 
 
 const ExpenseTypeManager = () => {
@@ -79,12 +80,14 @@ const ExpenseTypeManager = () => {
                             animation
                         />
                     }
-                    {data.length > 0 &&
+                    {data.length > 0 ?
                         <ExpenseTypesTable 
                             data={data} 
                             onClickEdit={onClickEdit} 
                             onClickDelete={onClickDelete} 
                         />
+                    :
+                        <BlankState />
                     }
                 </Block>
                 
