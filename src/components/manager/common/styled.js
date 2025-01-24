@@ -1,7 +1,12 @@
 import { styled } from "styletron-react";
-import { ParagraphMedium } from "baseui/typography";
+import { ParagraphSmall, LabelMedium } from "baseui/typography";
 
 
-export const DetailsLabelText = styled(ParagraphMedium, {
+export const DetailsLabelTextUI = styled(LabelMedium, {
     fontWeight: '600',
+});
+
+export const DetailsTextUI = styled(ParagraphSmall, {
+    marginTop: '5px',
+    marginBottom: '0px',
 });

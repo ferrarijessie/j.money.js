@@ -47,21 +47,10 @@ export const detailsGridOverrides = {
     overrides: {
         Block: {
             style: {
-                padding: '0px',
-                borderRight: '1px solid #eeeeee',
-                width: '5%',
-                marginRight: '10px',
-                paddingRight: '10px'
-            }
-        }
-    }
-};
-
-export const detailsAttributesGridOverrides = {
-    overrides: {
-        Block: {
-            style: {
-               textAlign: 'right',
+                textAlign: 'center',
+                border: '1px solid #eeeeee',
+                padding: '10px',
+                marginBottom: '20px',
             }
         }
     }

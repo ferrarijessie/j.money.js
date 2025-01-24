@@ -6,8 +6,6 @@ import { Button, SIZE } from "baseui/button";
 import { Skeleton } from "baseui/skeleton";
 import { Block } from "baseui/block";
 
-import { ParagraphMedium } from "baseui/typography";
-
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPencil, faPlus } from '@fortawesome/free-solid-svg-icons';
 
@@ -26,10 +24,9 @@ import ConfirmActionModal from "../../../common/ConfirmActionModal";
 import { 
     buttonGridOverrides,
     detailsGridOverrides, 
-    detailsAttributesGridOverrides,
 } from "../../common/overrides";
 
-import { DetailsLabelText } from "../../common/styled";
+import { DetailsLabelTextUI, DetailsTextUI } from "../../common/styled";
 
 
 const ExpenseTypeDetails = () => {
@@ -131,31 +128,26 @@ const ExpenseTypeDetails = () => {
             >
 
                 <Block>
-                    <FlexGrid flexGridColumnCount={2}>
-                        <FlexGridItem {...detailsGridOverrides}>
-                            <FlexGrid flexGridColumnCount={2}>
-                                <FlexGridItem>
-                                    <DetailsLabelText>Category:</DetailsLabelText>
-                                    <DetailsLabelText>Recurrent:</DetailsLabelText>
-                                    {!!expenseTypeData.recurrent && <DetailsLabelText>Base Value:</DetailsLabelText>}
-                                </FlexGridItem>
-                                <FlexGridItem {...detailsAttributesGridOverrides}>
-                                    <ParagraphMedium>{expenseTypeData.category.toUpperCase()}</ParagraphMedium>
-                                    <ParagraphMedium>{expenseTypeData.recurrent ? 'Yes' : 'No'}</ParagraphMedium>
-                                    {!!expenseTypeData.recurrent && <ParagraphMedium>R$ {expenseTypeData.baseValue.toFixed(2)}</ParagraphMedium>}
-                                </FlexGridItem>
-                            </FlexGrid>
+                    <FlexGrid flexGridColumnCount={3} {...detailsGridOverrides}>
+                        <FlexGridItem>
+                            <DetailsLabelTextUI>Category</DetailsLabelTextUI>
+                            <DetailsTextUI>{expenseTypeData.category.toUpperCase()}</DetailsTextUI>
                         </FlexGridItem>
                         <FlexGridItem>
-                            <ExpenseTable 
-                                data={expenseTypeData.expenseValues} 
-                                onClickEdit={onClickEdit} 
-                                onClickDelete={onClickDelete} 
-                                reload={reload}
-                            />
+                            <DetailsLabelTextUI>Base Value</DetailsLabelTextUI>
+                            <DetailsTextUI>{!!expenseTypeData.recurrent ? `R$ ${expenseTypeData.baseValue.toFixed(2)}` : '-'}</DetailsTextUI>
+                        </FlexGridItem>
+                        <FlexGridItem>
+                            <DetailsLabelTextUI>Recurrent</DetailsLabelTextUI>
+                            <DetailsTextUI>{expenseTypeData.recurrent ? 'Yes' : 'No'}</DetailsTextUI>
                         </FlexGridItem>
                     </FlexGrid>
-                    
+                    <ExpenseTable 
+                        data={expenseTypeData.expenseValues} 
+                        onClickEdit={onClickEdit} 
+                        onClickDelete={onClickDelete} 
+                        reload={reload}
+                    />
                 </Block>
             </ManagerSubPage>
 

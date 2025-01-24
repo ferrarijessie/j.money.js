@@ -23,7 +23,7 @@ const BlankState = () => {
     return (
         <ContainerUI>
             <ParagraphMedium>
-                <FontAwesomeIcon icon={faEyeSlash} width="50px" />
+                <FontAwesomeIcon icon={faEyeSlash} height={"50px"} />
             </ParagraphMedium>
             <TitleUI>No Results to Show Yet</TitleUI>
             <ParagraphSmall>Click the "New" button on the top to get started!</ParagraphSmall>

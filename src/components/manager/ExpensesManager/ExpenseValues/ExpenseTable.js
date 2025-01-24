@@ -33,6 +33,13 @@ const overrides = {
         },
       }),
     },
+    Root: {
+        style: {
+            overflow: 'scroll',
+            maxHeight: '600px',
+            border: '1px solid #eeeeee',
+        }
+    }
 };
 
 const ExpenseTable = ({
