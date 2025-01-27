@@ -134,12 +134,12 @@ const ExpenseTypeDetails = () => {
                             <DetailsTextUI>{expenseTypeData.category.toUpperCase()}</DetailsTextUI>
                         </FlexGridItem>
                         <FlexGridItem>
-                            <DetailsLabelTextUI>Base Value</DetailsLabelTextUI>
-                            <DetailsTextUI>{!!expenseTypeData.recurrent ? `R$ ${expenseTypeData.baseValue.toFixed(2)}` : '-'}</DetailsTextUI>
-                        </FlexGridItem>
-                        <FlexGridItem>
                             <DetailsLabelTextUI>Recurrent</DetailsLabelTextUI>
                             <DetailsTextUI>{expenseTypeData.recurrent ? 'Yes' : 'No'}</DetailsTextUI>
+                        </FlexGridItem>
+                        <FlexGridItem>
+                            <DetailsLabelTextUI>Base Value</DetailsLabelTextUI>
+                            <DetailsTextUI>{!!expenseTypeData.recurrent ? `R$ ${expenseTypeData.baseValue.toFixed(2)}` : '-'}</DetailsTextUI>
                         </FlexGridItem>
                     </FlexGrid>
                     <ExpenseTable 
