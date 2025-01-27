@@ -10,7 +10,6 @@ import { EXPENSE_VALUES_MANAGER_PATH } from "../../../../AppPaths";
 
 import { useExpenses } from "../../../../hooks/expenses/useExpenses";
 import { useExpenseDelete } from "../../../../hooks/expenses/useExpenseDelete";
-import { useExpensePut } from "../../../../hooks/expenses/useExpensePut";
 import { useExpenseTypes } from "../../../../hooks/expenseTypes/useExpenseTypes";
 
 import AddExpenseModal from "../../../common/ExpensesActions/AddExpenseModal";
@@ -30,7 +29,6 @@ const ExpenseManager = () => {
     const [isSaveLoading, setIsSaveLoading] = React.useState(false);
 
     const { mutateAsync: deleteExpenseRequest } = useExpenseDelete();
-    const { mutateAsync: editExpenseRequest } = useExpensePut();
 
     const {
         isLoading, 
@@ -69,18 +67,6 @@ const ExpenseManager = () => {
         setIsSaveLoading(false);
     };
 
-    const onClickStatus = async (item) => {
-        const expenseId = item.expenseId;
-
-        await editExpenseRequest({
-            id: expenseId, 
-            payload: {
-                'paid': item.paid ? false : true
-            }
-        });
-        await reload();
-    };
-
     return (
         <>
             <ManagerSubPage 
@@ -111,7 +97,7 @@ const ExpenseManager = () => {
                             data={data} 
                             onClickEdit={onClickEdit} 
                             onClickDelete={onClickDelete} 
-                            onClickStatus={onClickStatus}
+                            reload={reload}
                         />
                     :
                         <BlankState />

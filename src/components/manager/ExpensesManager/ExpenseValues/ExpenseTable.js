@@ -46,10 +46,12 @@ const ExpenseTable = ({
     data,
     onClickEdit,
     onClickDelete,
-    onClickStatus,
+    reload
 }) => {
     const [sortColumn, setSortColumn] = React.useState("expenseId");
     const [sortAsc, setSortAsc] = React.useState(true);
+
+    const { mutateAsync: editExpenseRequest } = useExpensePut();
 
     const sortedData = React.useMemo(() => {
         return data.slice().sort((a, b) => {
@@ -64,6 +66,18 @@ const ExpenseTable = ({
           });
         });
     }, [sortColumn, sortAsc, data]);
+
+    const onClickStatus = async (item) => {
+        const expenseId = item.expenseId;
+
+        await editExpenseRequest({
+            id: expenseId, 
+            payload: {
+                'paid': item.paid ? false : true
+            }
+        });
+        await reload();
+    };
 
     function handleSort(id) {
         if (id === sortColumn) {
