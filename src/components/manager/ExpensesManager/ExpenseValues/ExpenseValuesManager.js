@@ -42,6 +42,7 @@ const ExpenseManager = () => {
     } = useExpenseTypes();
 
     const onCloseModal = () => {
+        setIsModalOpen(false);
         setIsAddModalOpen(false);
         setIsConfirmModalOpen(false);
         setSelectedExpense(null);
