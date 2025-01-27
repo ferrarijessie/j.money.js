@@ -167,7 +167,7 @@ const ExpenseTypeDetails = () => {
                         onClose={onCloseModal}
                         onConfirmClick={onConfirmDelete}
                         title="Delete Expense"
-                        content={`Are you sure you want to delete Expense #${selectedExpense["expenseId"]} - ${selectedExpense["type"]}?`}
+                        content={`Are you sure you want to delete Expense ${selectedExpense["month"]}/${selectedExpense["year"]} - R$${selectedExpense["value"]}?`}
                         isLoading={isSaveLoading}
                     />
                 </>
