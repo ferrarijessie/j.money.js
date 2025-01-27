@@ -17,7 +17,7 @@ import { EXPENSE_TYPES_MANAGER_PATH } from "../../../../AppPaths";
 import ManagerSubPage from "../../ManagerSubPage";
 import ExpenseTypeModal from "../../../common/ExpenseTypeActions/ExpenseTypeModal";
 import ExpenseTable from "../ExpenseValues/ExpenseTable";
-import EditExpenseModal from "../../../common/ExpenseTypeActions/ExpenseTypeModal";
+import EditExpenseModal from "../../../common/ExpensesActions/EditExpenseModal";
 import AddExpenseModal from "../../../common/ExpensesActions/AddExpenseModal";
 import ConfirmActionModal from "../../../common/ConfirmActionModal";
 
