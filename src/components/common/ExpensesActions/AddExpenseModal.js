@@ -1,4 +1,5 @@
 import * as React from "react";
+import moment from "moment";
 import {
   Modal,
   ModalHeader,
@@ -57,14 +58,15 @@ const AddExpenseModal = ({
 
     const clearFields = () => {
         setExpenseType("");
-        setValue(0.00);
+        setValue(!!expenseTypeInitial ? expenseTypeInitial.baseValue.toFixed(2) : 0.00);
         setMonth(1);
-        setYear(2024);
+        setYear(moment().format('Y'));
     };
 
     const options = expenseTypes?.map(eType => ({
         label: eType['name'],
-        id: eType['expenseTypeId']
+        id: eType['expenseTypeId'],
+        baseValue: eType['baseValue']
     }));
 
     const handleClose = () => {
@@ -100,6 +102,7 @@ const AddExpenseModal = ({
     const handleOptionchange = (option) => {
         setExpenseType(option);
         setExpenseTypeId(option['0']['id']);
+        setValue(option[0]['baseValue'].toFixed(2));
     };
 
     return (
