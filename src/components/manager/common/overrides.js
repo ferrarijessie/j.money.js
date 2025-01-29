@@ -91,3 +91,35 @@ export const bodyGridOverrides = {
         }
     }
 };
+
+export const listHeadingOverrides = {
+    overrides: {
+        Root: {
+            style: {
+                borderBottom: '1px solid #eeeeee',
+            }
+        }
+    }
+};
+
+export const listItemOverrides = {
+    overrides: {
+        Root: {
+            style: {
+                height: '25px',
+                padding: '5px',
+                borderBottom: '1px dotted #eeeeee',
+            }
+        }
+    }
+};
+
+export const managerSummaryGridOverrides = {
+    overrides: {
+        Block: {
+            style: {
+                borderTop: '1px solid #eeeeee',
+            }
+        }
+    }
+};
