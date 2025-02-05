@@ -143,7 +143,7 @@ const ExpenseTypeDetails = () => {
                         </FlexGridItem>
                     </FlexGrid>
                     <ExpenseTable 
-                        data={expenseTypeData.expenseValues} 
+                        expensesData={expenseTypeData.expenseValues} 
                         onClickEdit={onClickEdit} 
                         onClickDelete={onClickDelete} 
                         reload={reload}

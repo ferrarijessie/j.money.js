@@ -123,3 +123,24 @@ export const managerSummaryGridOverrides = {
         }
     }
 };
+
+export const managerFilterGridOverrides = {
+    overrides: {
+        Block: {
+            style: {
+                marginBottom: "20px",
+            }
+        }
+    }
+};
+
+export const filterItemsOverrides = {
+    overrides: {
+        Block: {
+            style: {
+                padding: "0px 5px",
+                width: "24%"
+            }
+        }
+    }
+};

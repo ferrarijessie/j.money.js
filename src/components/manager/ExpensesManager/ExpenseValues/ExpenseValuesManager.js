@@ -17,8 +17,9 @@ import EditExpenseModal from "../../../common/ExpensesActions/EditExpenseModal";
 import ConfirmActionModal from "../../../common/ConfirmActionModal";
 
 import ManagerSubPage from "../../ManagerSubPage";
-import ExpenseTable from "./ExpenseTable";
 import BlankState from "../../common/BlankState";
+
+import ExpenseTable from "./ExpenseTable";
 
 
 const ExpenseManager = () => {
@@ -83,7 +84,6 @@ const ExpenseManager = () => {
                     </Button>
                 }
             >
-
                 <Block>
                     {isLoading &&
                         <Skeleton
@@ -95,7 +95,7 @@ const ExpenseManager = () => {
                     }
                     {data.length > 0 ?
                         <ExpenseTable 
-                            data={data} 
+                            expensesData={data} 
                             onClickEdit={onClickEdit} 
                             onClickDelete={onClickDelete} 
                             reload={reload}
