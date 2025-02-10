@@ -76,10 +76,10 @@ const ExpenseTypeModal = ({
 
     const clearFields = () => {
         setFormErrors({});
-        setTypeName("");
-        setCategory("");
-        setRecurrent(false);
-        setBaseValue(0.00);
+        setTypeName(expenseType ? expenseType["name"] : "");
+        setCategory(expenseType ? expenseType["category"].toUpperCase() : "");
+        setRecurrent(expenseType ? expenseType["recurrent"] : false);
+        setBaseValue(expenseType ? expenseType["baseValue"] : 0.00);
     };
 
     React.useEffect(() => {

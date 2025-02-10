@@ -16,30 +16,33 @@ import { FlexGrid, FlexGridItem } from "baseui/flex-grid";
 import { FormControl } from "baseui/form-control";
 
 import { useExpensePost } from "../../../hooks/expenses/useExpensePost"; 
+import { useExpensePut } from "../../../hooks/expenses/useExpensePut";
 
 
 const gridOverrides = {
     marginTop: '15px'
 };
 
-const AddExpenseModal = ({
+const ExpenseModal = ({
     isOpen,
     onClose,
     reload,
     expenseTypes = [],
-    expenseTypeInitial = null
+    expenseTypeInitial = null,
+    expense = null
 }) => {
     
     const [isLoading, setIsLoading] = React.useState(false);
     const [expenseType, setExpenseType] = React.useState("");
-    const [expenseTypeId, setExpenseTypeId] = React.useState(!!expenseTypeInitial ? expenseTypeInitial.expenseTypeId : 0);
-    const [value, setValue] = React.useState(!!expenseTypeInitial ? expenseTypeInitial.baseValue.toFixed(2) : 0.00);
-    const [month, setMonth] = React.useState(1);
-    const [year, setYear] = React.useState(2025);
+    const [expenseTypeId, setExpenseTypeId] = React.useState(!!expense ? expense.expenseTypeId : !!expenseTypeInitial ? expenseTypeInitial.expenseTypeId : 0);
+    const [value, setValue] = React.useState(!!expense ? expense.value : !!expenseTypeInitial ? expenseTypeInitial.baseValue.toFixed(2) : 0.00);
+    const [month, setMonth] = React.useState(!!expense ? expense.month : moment().format('MM'));
+    const [year, setYear] = React.useState(!!expense ? expense.year : moment().format('YYYY'));
 
     const [formErrors, setFormErrors] = React.useState({});
 
     const { mutateAsync: addExpenseRequest } = useExpensePost();
+    const { mutateAsync: editExpenseRequest } = useExpensePut();
 
     const onSaveClick = async (typeId, value, month, year) => {
         setIsLoading(true);
@@ -50,17 +53,26 @@ const AddExpenseModal = ({
             'typeId': typeId,
             'value': value
         };
-        await addExpenseRequest(payload);
+
+        if (!!expense) {
+            await editExpenseRequest({
+                id: expense.expenseId, 
+                payload: payload
+            });
+        } else {
+            await addExpenseRequest(payload);
+        }
         await reload();
 
         setIsLoading(false);
+        onClose();
     };
 
     const clearFields = () => {
         setExpenseType("");
         setValue(!!expenseTypeInitial ? expenseTypeInitial.baseValue.toFixed(2) : 0.00);
-        setMonth(1);
-        setYear(moment().format('Y'));
+        setMonth(moment().format('MM'));
+        setYear(moment().format('YYYY'));
     };
 
     const options = expenseTypes?.map(eType => ({
@@ -105,6 +117,19 @@ const AddExpenseModal = ({
         setValue(option[0]['baseValue'].toFixed(2));
     };
 
+    React.useEffect(() => {
+        if (expense !== null) {
+            setExpenseType(expense.expenseTypeName);
+            expenseTypeId(expense.expenseTypeId)
+            setValue(expense.value.toFixed(2));
+            setMonth(expense.month);
+            setYear(expense.year);
+        }
+        else {
+            clearFields();
+        }
+    }, [expense]);
+
     return (
         <Modal
             onClose={handleClose}
@@ -123,7 +148,13 @@ const AddExpenseModal = ({
                         label="Expense Type *"
                         error={"type" in formErrors ? formErrors["type"] : null}
                     >
-                        {!expenseTypeInitial ? 
+                        {!!expenseTypeInitial || expense ?
+                            <Input 
+                                value={!!expenseTypeInitial ? expenseTypeInitial.name : expense.expenseTypeName}
+                                disabled
+                                size={InputSize.compact}
+                            /> 
+                        :
                             <Select
                                 value={expenseType}
                                 onChange={({ value }) => handleOptionchange(value)}
@@ -131,12 +162,6 @@ const AddExpenseModal = ({
                                 size={InputSize.compact}
                                 labelKey="label"
                                 valueKey="id"
-                            />
-                        :
-                            <Input 
-                                value={expenseTypeInitial.name}
-                                disabled
-                                size={InputSize.compact}
                             />
                         }
                     </FormControl>
@@ -201,4 +226,4 @@ const AddExpenseModal = ({
     );
 }
 
-export default AddExpenseModal;
+export default ExpenseModal;

@@ -15,10 +15,9 @@ import { useExpenseDelete } from "../../../../hooks/expenses/useExpenseDelete";
 import { EXPENSE_TYPES_MANAGER_PATH } from "../../../../AppPaths";
 
 import ManagerSubPage from "../../ManagerSubPage";
-import ExpenseTypeModal from "../../../common/ExpenseTypeActions/ExpenseTypeModal";
+import ExpenseTypeModal from "../../../common/ExpensesActions/ExpenseTypeModal";
 import ExpenseTable from "../ExpenseValues/ExpenseTable";
-import EditExpenseModal from "../../../common/ExpensesActions/EditExpenseModal";
-import AddExpenseModal from "../../../common/ExpensesActions/AddExpenseModal";
+import ExpenseModal from "../../../common/ExpensesActions/ExpenseModal";
 import ConfirmActionModal from "../../../common/ConfirmActionModal";
 
 import { 
@@ -34,7 +33,6 @@ const ExpenseTypeDetails = () => {
     const { id } = useParams();
 
     const [isModalOpen, setIsModalOpen] = React.useState(false);
-    const [isAddModalOpen, setIsAddModalOpen] = React.useState(false);
     const [isEditModalOpen, setIsEditModalOpen] = React.useState(false);
     const [isConfirmModalOpen, setIsConfirmModalOpen] = React.useState(false);
     const [selectedExpense, setSelectedExpense] = React.useState(null);
@@ -49,10 +47,9 @@ const ExpenseTypeDetails = () => {
     } = useExpenseType(id);
 
     const onCloseModal = () => {
-        setIsAddModalOpen(false);
+        setIsModalOpen(false);
         setIsEditModalOpen(false);
         setIsConfirmModalOpen(false);
-        setSelectedExpense(null);
     };
 
     const onClickEdit = (expense) => {
@@ -110,14 +107,14 @@ const ExpenseTypeDetails = () => {
                 actions={
                     <>
                         <Button 
-                            onClick={() => setIsModalOpen(true)}
+                            onClick={() => setIsEditModalOpen(true)}
                             startEnhancer={<FontAwesomeIcon icon={faPencil} />}
                             size={SIZE.compact}
                         >
                                 Edit
                         </Button>
                         <Button 
-                            onClick={() => setIsAddModalOpen(true)}
+                            onClick={() => setIsModalOpen(true)}
                             startEnhancer={<FontAwesomeIcon icon={faPlus} />}
                             size={SIZE.compact}
                         >
@@ -153,15 +150,6 @@ const ExpenseTypeDetails = () => {
 
             {!!selectedExpense &&
                 <>
-                    <EditExpenseModal 
-                        isOpen={isEditModalOpen} 
-                        onClose={onCloseModal} 
-                        reload={reload}
-                        expenseValue={selectedExpense['value']}
-                        expenseType={selectedExpense['type']} 
-                        selectedExpense={selectedExpense}
-                    />
-
                     <ConfirmActionModal 
                         isOpen={isConfirmModalOpen}
                         onClose={onCloseModal}
@@ -173,17 +161,18 @@ const ExpenseTypeDetails = () => {
                 </>
             }
 
-            <AddExpenseModal 
-                isOpen={isAddModalOpen}
+            <ExpenseModal 
+                isOpen={isModalOpen}
                 onClose={onCloseModal}
                 reload={reload}
                 expenseTypes={null}
                 expenseTypeInitial={expenseTypeData} 
+                expense={selectedExpense}
             />
 
             <ExpenseTypeModal 
-                isOpen={isModalOpen}
-                onClose={() => setIsModalOpen(false)}
+                isOpen={isEditModalOpen}
+                onClose={onCloseModal}
                 reload={reload}
                 expenseType={expenseTypeData}
             />

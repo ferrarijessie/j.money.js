@@ -11,7 +11,7 @@ import { useExpenseTypeDelete } from "../../../../hooks/expenseTypes/useExpenseT
 
 import { EXPENSE_TYPES_MANAGER_PATH } from "../../../../AppPaths";
 
-import ExpenseTypeModal from "../../../common/ExpenseTypeActions/ExpenseTypeModal";
+import ExpenseTypeModal from "../../../common/ExpensesActions/ExpenseTypeModal";
 import ConfirmActionModal from "../../../common/ConfirmActionModal";
 
 import ManagerSubPage from "../../ManagerSubPage";

@@ -12,8 +12,7 @@ import { useExpenses } from "../../../../hooks/expenses/useExpenses";
 import { useExpenseDelete } from "../../../../hooks/expenses/useExpenseDelete";
 import { useExpenseTypes } from "../../../../hooks/expenseTypes/useExpenseTypes";
 
-import AddExpenseModal from "../../../common/ExpensesActions/AddExpenseModal";
-import EditExpenseModal from "../../../common/ExpensesActions/EditExpenseModal";
+import ExpenseModal from "../../../common/ExpensesActions/ExpenseModal";
 import ConfirmActionModal from "../../../common/ConfirmActionModal";
 
 import ManagerSubPage from "../../ManagerSubPage";
@@ -24,7 +23,6 @@ import ExpenseTable from "./ExpenseTable";
 
 const ExpenseManager = () => {
     const [isModalOpen, setIsModalOpen] = React.useState(false);
-    const [isAddModalOpen, setIsAddModalOpen] = React.useState(false);
     const [isConfirmModalOpen, setIsConfirmModalOpen] = React.useState(false);
     const [selectedExpense, setSelectedExpense] = React.useState(null);
     const [isSaveLoading, setIsSaveLoading] = React.useState(false);
@@ -44,7 +42,7 @@ const ExpenseManager = () => {
 
     const onCloseModal = () => {
         setIsModalOpen(false);
-        setIsAddModalOpen(false);
+        setIsModalOpen(false);
         setIsConfirmModalOpen(false);
         setSelectedExpense(null);
     };
@@ -76,7 +74,7 @@ const ExpenseManager = () => {
                 itemTitle={"Expense Values"}
                 actions={
                     <Button 
-                        onClick={() => setIsAddModalOpen(true)}
+                        onClick={() => setIsModalOpen(true)}
                         startEnhancer={<FontAwesomeIcon icon={faPlus} />}
                         size={SIZE.compact}
                     >
@@ -109,15 +107,6 @@ const ExpenseManager = () => {
 
             {selectedExpense &&
                 <>
-                    <EditExpenseModal 
-                        isOpen={isModalOpen} 
-                        onClose={onCloseModal} 
-                        reload={reload}
-                        expenseValue={selectedExpense['value']}
-                        expenseType={selectedExpense['type']} 
-                        selectedExpense={selectedExpense}
-                    />
-
                     <ConfirmActionModal 
                         isOpen={isConfirmModalOpen}
                         onClose={onCloseModal}
@@ -129,12 +118,13 @@ const ExpenseManager = () => {
                 </>
             }
 
-            <AddExpenseModal 
-                isOpen={isAddModalOpen}
+            <ExpenseModal 
+                isOpen={isModalOpen}
                 onClose={onCloseModal}
                 reload={reload}
                 expenseTypes={expenseTypesData}
                 isLoading={isSaveLoading}
+                expense={selectedExpense}
             />
         </>
     );
