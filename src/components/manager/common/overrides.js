@@ -144,3 +144,34 @@ export const filterItemsOverrides = {
         }
     }
 };
+
+export const actionItemOverrides = {
+    overrides: {
+        Block: {
+            style: {
+                gap: '5px',
+                display: 'flex',
+                justifyContent: 'flex-end'
+            }
+        }
+    }
+};
+
+export const typesTableOverrides = {
+    TableBodyRow: {
+      style: ({ $theme, $rowIndex }) => ({
+        backgroundColor:
+          $rowIndex % 2
+            ? $theme.colors.backgroundPrimary
+            : $theme.colors.backgroundSecondary,
+        ":hover": {
+          backgroundColor: $theme.colors.backgroundTertiary,
+        },
+      }),
+    },
+    Root: {
+        style: {
+            height: '650px'
+        }
+    }
+};

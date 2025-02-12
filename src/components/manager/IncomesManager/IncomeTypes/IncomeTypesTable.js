@@ -1,7 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
-import { INCOME_TYPES_MANAGER_PATH } from "../../../../AppPaths";
 
 import { Button, SIZE } from "baseui/button";
 import { FlexGrid, FlexGridItem } from "baseui/flex-grid";
@@ -10,32 +9,13 @@ import { TableBuilder, TableBuilderColumn } from "baseui/table-semantic";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPen, faTrash, faEye } from '@fortawesome/free-solid-svg-icons';
 
+import { INCOME_TYPES_MANAGER_PATH } from "../../../../AppPaths";
 
-const itemOverrides = {
-    overrides: {
-        Block: {
-            style: {
-                gap: '5px',
-                display: 'flex',
-                justifyContent: 'flex-end'
-            }
-        }
-    }
-};
+import { 
+    actionItemOverrides,
+    typesTableOverrides
+} from "../../common/overrides";
 
-const overrides = {
-    TableBodyRow: {
-      style: ({ $theme, $rowIndex }) => ({
-        backgroundColor:
-          $rowIndex % 2
-            ? $theme.colors.backgroundPrimary
-            : $theme.colors.backgroundSecondary,
-        ":hover": {
-          backgroundColor: $theme.colors.backgroundTertiary,
-        },
-      }),
-    },
-};
 
 const IncomeTypesTable = ({
     data,
@@ -79,7 +59,7 @@ const IncomeTypesTable = ({
     const expenseTypeActions = (item) => {
         return (
             <FlexGrid flexGridColumnCount={1}>
-                <FlexGridItem {...itemOverrides}>
+                <FlexGridItem {...actionItemOverrides}>
                     <Button 
                         size={SIZE.mini} onClick={() => onClickEdit(item)}
                         startEnhancer={<FontAwesomeIcon icon={faPen} />}
@@ -109,7 +89,7 @@ const IncomeTypesTable = ({
             sortColumn={sortColumn}
             sortOrder={sortAsc ? "ASC" : "DESC"}
             onSort={handleSort}
-            overrides={overrides}
+            overrides={typesTableOverrides}
         >
             <TableBuilderColumn id="name" header="Name" sortable>
                 {(row) => row["name"]}
