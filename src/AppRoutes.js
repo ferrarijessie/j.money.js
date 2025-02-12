@@ -17,11 +17,16 @@ import IncomeTypesManager from "./components/manager/IncomesManager/IncomeTypes/
 import IncomeTypeDetails from "./components/manager/IncomesManager/IncomeTypes/IncomeTypeDetails";
 import IncomeValuesManager from "./components/manager/IncomesManager/IncomeValues/IncomeValuesManager";
 
+import SavingsManager from "./components/manager/SavingsManager/SavingsManager";
+import SavingTypesManager from "./components/manager/SavingsManager/SavingTypes/SavingTypesManager";
+import SavingTypeDetails from "./components/manager/SavingsManager/SavingTypes/SavingTypeDetails";
+import SavingValuesManager from "./components/manager/SavingsManager/SavingValues/SavingValuesManager";
+
 import {
     MANAGER_PATH, 
     EXPENSES_MANAGER_PATH, EXPENSE_TYPES_MANAGER_PATH, EXPENSE_TYPE_DETAILS_PATH, EXPENSE_VALUES_MANAGER_PATH,
     INCOMES_MANAGER_PATH, INCOME_TYPES_MANAGER_PATH, INCOME_TYPE_DETAILS_PATH, INCOME_VALUES_MANAGER_PATH,
-    SAVINGS_MANAGER_PATH, SAVING_TYPES_MANGER_PATH, SAVING_VALUES_MANAGER_PATH
+    SAVINGS_MANAGER_PATH, SAVING_TYPES_MANGER_PATH, SAVING_TYPE_DETAILS_PATH, SAVING_VALUES_MANAGER_PATH
 } from "./AppPaths";
 
 
@@ -41,6 +46,11 @@ const AppRoutes = () => {
             <Route path={INCOME_TYPES_MANAGER_PATH} element={ <IncomeTypesManager /> } />
             <Route path={INCOME_TYPE_DETAILS_PATH} element={ <IncomeTypeDetails /> } />
             <Route path={INCOME_VALUES_MANAGER_PATH} element={ <IncomeValuesManager /> } />
+
+            <Route path={SAVINGS_MANAGER_PATH} element={ <SavingsManager /> } />
+            <Route path={SAVING_TYPES_MANGER_PATH} element={ <SavingTypesManager /> } />
+            <Route path={SAVING_TYPE_DETAILS_PATH} element={ <SavingTypeDetails /> } />
+            <Route path={SAVING_VALUES_MANAGER_PATH} element={ <SavingValuesManager /> } />
 
         </Routes>
    )
