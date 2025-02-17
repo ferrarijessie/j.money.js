@@ -34,10 +34,10 @@ const ExpenseModal = ({
     
     const [isLoading, setIsLoading] = React.useState(false);
     const [expenseType, setExpenseType] = React.useState("");
-    const [expenseTypeId, setExpenseTypeId] = React.useState(!!expense ? expense.expenseTypeId : !!expenseTypeInitial ? expenseTypeInitial.expenseTypeId : 0);
-    const [value, setValue] = React.useState(!!expense ? expense.value : !!expenseTypeInitial ? expenseTypeInitial.baseValue.toFixed(2) : 0.00);
-    const [month, setMonth] = React.useState(!!expense ? expense.month : moment().format('MM'));
-    const [year, setYear] = React.useState(!!expense ? expense.year : moment().format('YYYY'));
+    const [expenseTypeId, setExpenseTypeId] = React.useState(!!expenseTypeInitial ? expenseTypeInitial.expenseTypeId : 0);
+    const [value, setValue] = React.useState(!!expenseTypeInitial ? expenseTypeInitial.baseValue.toFixed(2) : 0.00);
+    const [month, setMonth] = React.useState(moment().format('MM'));
+    const [year, setYear] = React.useState(moment().format('YYYY'));
 
     const [formErrors, setFormErrors] = React.useState({});
 
@@ -56,7 +56,7 @@ const ExpenseModal = ({
 
         if (!!expense) {
             await editExpenseRequest({
-                id: expense.expenseId, 
+                id: expense.id, 
                 payload: payload
             });
         } else {
@@ -119,8 +119,8 @@ const ExpenseModal = ({
 
     React.useEffect(() => {
         if (expense !== null) {
-            setExpenseType(expense.expenseTypeName);
-            expenseTypeId(expense.expenseTypeId)
+            setExpenseType(expense.typeName);
+            setExpenseTypeId(expense.typeId)
             setValue(expense.value.toFixed(2));
             setMonth(expense.month);
             setYear(expense.year);
@@ -150,7 +150,7 @@ const ExpenseModal = ({
                     >
                         {!!expenseTypeInitial || expense ?
                             <Input 
-                                value={!!expenseTypeInitial ? expenseTypeInitial.name : expense.expenseTypeName}
+                                value={!!expenseTypeInitial ? expenseTypeInitial.name : expense.typeName}
                                 disabled
                                 size={InputSize.compact}
                             /> 

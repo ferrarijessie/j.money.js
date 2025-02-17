@@ -34,10 +34,10 @@ const IncomeModal = ({
     
     const [isLoading, setIsLoading] = React.useState(false);
     const [incomeType, setIncomeType] = React.useState("");
-    const [incomeTypeId, setIncomeTypeId] = React.useState(!!income ? income.incomeTypeId : !!incomeTypeInitial ? incomeTypeInitial.incomeTypeId : 0);
-    const [value, setValue] = React.useState(!!income ? income.value : !!incomeTypeInitial ? incomeTypeInitial.baseValue.toFixed(2) : 0.00);
-    const [month, setMonth] = React.useState(!!income ? income.month : moment().format('MM'));
-    const [year, setYear] = React.useState(!!income ? income.year : moment().format('YYYY'));
+    const [incomeTypeId, setIncomeTypeId] = React.useState(!!incomeTypeInitial ? incomeTypeInitial.incomeTypeId : 0);
+    const [value, setValue] = React.useState(!!incomeTypeInitial ? incomeTypeInitial.baseValue.toFixed(2) : 0.00);
+    const [month, setMonth] = React.useState(moment().format('MM'));
+    const [year, setYear] = React.useState(moment().format('YYYY'));
 
     const [formErrors, setFormErrors] = React.useState({});
 
@@ -56,7 +56,7 @@ const IncomeModal = ({
 
         if (!!income) {
             await editIncomeResquest({
-                id: income["incomeId"], 
+                id: income["id"], 
                 payload: payload})
         }
         else {
@@ -120,8 +120,8 @@ const IncomeModal = ({
 
     React.useEffect(() => {
         if (income !== null) {
-            setIncomeType(income.incomeType);
-            setIncomeTypeId(income.incomeTypeId)
+            setIncomeType(income.typeName);
+            setIncomeTypeId(income.typeId)
             setValue(income.value.toFixed(2));
             setMonth(income.month);
             setYear(income.year);
@@ -151,7 +151,7 @@ const IncomeModal = ({
                     >
                         {!!incomeTypeInitial || !!income ? 
                             <Input 
-                                value={!!incomeTypeInitial ? incomeTypeInitial.name : income.incomeType}
+                                value={!!incomeTypeInitial ? incomeTypeInitial.name : income.typeName}
                                 disabled
                                 size={InputSize.compact}
                             />
