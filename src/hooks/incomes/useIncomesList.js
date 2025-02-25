@@ -1,10 +1,10 @@
 import { useQuery } from '@tanstack/react-query';
 import axios from "axios";
 
-import { INCOMES_URL } from '../endpoints';
+import { getHeader, INCOMES_URL } from '../endpoints';
 
 export const fetchIncomesList = async (year, month) => {
-    const res = await axios.get(`${INCOMES_URL}/${year}/${month}`);
+    const res = await axios.get(`${INCOMES_URL}/${year}/${month}`, getHeader());
     return res.data;
 };
 

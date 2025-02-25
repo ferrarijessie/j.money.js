@@ -32,6 +32,7 @@ import ExpenseModal from "../common/ExpensesActions/ExpenseModal";
 import IncomeModal from "../common/IncomeActions/IncomeModal";
 import SavingValueModal from "../common/SavingActions/SavingValueModal";
 import SummaryTable from "./SummaryTable";
+import EmptySummary from "./EmptySummary";
 
 
 const ContainerUI = styled(Block, {
@@ -392,31 +393,37 @@ const Home = () => {
                         />
                     </FlexGridItem>
 
-                    <FlexGridItem {...addButtonItemOverrides}>
-                        <StatefulPopover
-                            focusLock
-                            placement={PLACEMENT.bottom}
-                            content={({close}) => (
-                                <StatefulMenu 
-                                    items={ITEMS}
-                                    onItemSelect={(option) => openAddModal(option, close)}
-                                />
-                            )}
-                        >
-                            <Button shape={SHAPE.circle}>
-                                <Plus />
-                            </Button>
-                        </StatefulPopover>
-                    </FlexGridItem>
+                    {filteredData.length > 0 && 
+                        <FlexGridItem {...addButtonItemOverrides}>
+                            <StatefulPopover
+                                focusLock
+                                placement={PLACEMENT.bottom}
+                                content={({close}) => (
+                                    <StatefulMenu 
+                                        items={ITEMS}
+                                        onItemSelect={(option) => openAddModal(option, close)}
+                                    />
+                                )}
+                            >
+                                <Button shape={SHAPE.circle}>
+                                    <Plus />
+                                </Button>
+                            </StatefulPopover>
+                        </FlexGridItem>
+                    }
 
                 </FlexGrid>
 
-                <SummaryTable 
-                    data={filteredData}
-                    onClickDelete={onClickDelete}
-                    onClickEdit={onClickEdit}
-                    onClickStatus={onClickStatus}
-                />
+                {filteredData.length > 0 ? 
+                    <SummaryTable 
+                        data={filteredData}
+                        onClickDelete={onClickDelete}
+                        onClickEdit={onClickEdit}
+                        onClickStatus={onClickStatus}
+                    />
+                :
+                    <EmptySummary />
+                }
                 
             </ContainerUI>
 

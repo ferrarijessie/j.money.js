@@ -1,11 +1,11 @@
 import { useMutation } from '@tanstack/react-query';
 import axios from "axios";
 
-import { SAVING_TYPES_URL } from '../endpoints';
+import { getHeader, SAVING_TYPES_URL } from '../endpoints';
 
 
 export const deleteSavingType = async (id) => {
-    const res = await axios.delete(`${SAVING_TYPES_URL}/${id}`);
+    const res = await axios.delete(`${SAVING_TYPES_URL}/${id}`, getHeader());
     return res.data;
 };
 

@@ -13,15 +13,26 @@ const AppNavigation = ({
     onMainItemSelect=null
 }) => {
     const navigate = useNavigate();
+
+    const user = JSON.parse(sessionStorage.getItem('user'));
+
+    const userItemAction = (item) => {
+        if (item.url === '/logout') {
+            sessionStorage.setItem('token', null);
+            window.location.reload();
+        } else {
+            navigate(item.url);
+        }
+    }
     
     return (
         <ThemeProvider theme={DarkTheme}>
             <AppNavBar
                 title="j.Money"
-                username="Jessica Ferrari"
-                usernameSubtitle="the creator"
+                username={user['username']}
+                usernameSubtitle={`#${user['id']}`}
                 userItems={UserItems()}
-                onUserItemSelect={item => navigate(item.url)}
+                onUserItemSelect={item => userItemAction(item)}
                 mainItems={mainItems}
                 onMainItemSelect={onMainItemSelect}
             />

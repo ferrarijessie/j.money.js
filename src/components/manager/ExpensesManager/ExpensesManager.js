@@ -122,7 +122,7 @@ const ExpenseManager = () => {
                                     endEnhancer={() => `R$ ${expense.value.toFixed(2)}`}
                                     {...listItemOverrides}
                                 >
-                                    <ListItemLabel>{expense.type}</ListItemLabel>
+                                    <ListItemLabel>{expense.typeName}</ListItemLabel>
                                 </ListItem>
                         ))
                     }

@@ -35,7 +35,7 @@ const IncomeValuesTable = ({
     const columns = [
         CategoricalColumn({
             title: 'Type',
-            mapDataToValue: (data) => data.incomeType,
+            mapDataToValue: (data) => data.typeName,
         }),
         CategoricalColumn({
             title: 'Month',

@@ -1,7 +1,7 @@
 import React from "react";
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faHouse, faGear } from '@fortawesome/free-solid-svg-icons';
+import { faHouse, faGear, faDoorOpen } from '@fortawesome/free-solid-svg-icons';
 
 
 const UserItems = () => [
@@ -14,6 +14,11 @@ const UserItems = () => [
         icon: (() => <FontAwesomeIcon icon={faGear} />),
         label: "Manage",
         url: '/manager'
+    },
+    {
+        icon: (() => <FontAwesomeIcon icon={faDoorOpen} />),
+        label: "Logout",
+        url: '/logout'
     },
 ];
 

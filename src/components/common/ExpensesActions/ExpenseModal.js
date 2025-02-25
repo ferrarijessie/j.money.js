@@ -56,7 +56,7 @@ const ExpenseModal = ({
 
         if (!!expense) {
             await editExpenseRequest({
-                id: expense.id, 
+                id: expense['id'], 
                 payload: payload
             });
         } else {

@@ -1,11 +1,11 @@
 import { useMutation } from '@tanstack/react-query';
 import axios from "axios";
 
-import { EXPENSES_URL } from '../endpoints';
+import { getHeader, EXPENSES_URL } from '../endpoints';
 
 
 export const deleteExpense = async (id) => {
-    const res = await axios.delete(`${EXPENSES_URL}/${id}`);
+    const res = await axios.delete(`${EXPENSES_URL}/${id}`, getHeader());
     return res.data;
 };
 

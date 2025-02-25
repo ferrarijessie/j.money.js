@@ -1,6 +1,8 @@
 // MANAGER
 export const MANAGER_PATH = '/manager';
 
+export const PROFILE_MANAGER_PATH = `${MANAGER_PATH}/profile`;
+
 export const EXPENSES_MANAGER_PATH = `${MANAGER_PATH}/expenses`;
 export const EXPENSE_TYPES_MANAGER_PATH = `${EXPENSES_MANAGER_PATH}/types`;
 export const EXPENSE_TYPE_DETAILS_PATH = `${EXPENSE_TYPES_MANAGER_PATH}/:id`;

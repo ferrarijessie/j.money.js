@@ -121,7 +121,7 @@ const IncomesManager = () => {
                                     endEnhancer={() => `R$ ${income.value.toFixed(2)}`}
                                     {...listItemOverrides}
                                 >
-                                    <ListItemLabel>{income.incomeType}</ListItemLabel>
+                                    <ListItemLabel>{income.typeName}</ListItemLabel>
                                 </ListItem>
                         ))
                     }

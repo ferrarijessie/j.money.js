@@ -1,10 +1,10 @@
 import { useQuery } from '@tanstack/react-query';
 import axios from "axios";
 
-import { SUMMARY_URL } from '../endpoints';
+import { getHeader, SUMMARY_URL } from '../endpoints';
 
 export const fetchSummary = async (year, month) => {
-    const res = await axios.get(`${SUMMARY_URL}/${year}/${month}`);
+    const res = await axios.get(`${SUMMARY_URL}/${year}/${month}`, getHeader());
     return res.data;
 };
 

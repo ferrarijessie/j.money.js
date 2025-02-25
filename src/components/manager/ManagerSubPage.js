@@ -14,7 +14,8 @@ import { styled } from "styletron-react";
 import { 
     EXPENSES_MANAGER_PATH, EXPENSE_TYPES_MANAGER_PATH, EXPENSE_VALUES_MANAGER_PATH,
     INCOMES_MANAGER_PATH, INCOME_TYPES_MANAGER_PATH, INCOME_VALUES_MANAGER_PATH,
-    SAVINGS_MANAGER_PATH, SAVING_TYPES_MANGER_PATH, SAVING_VALUES_MANAGER_PATH
+    SAVINGS_MANAGER_PATH, SAVING_TYPES_MANGER_PATH, SAVING_VALUES_MANAGER_PATH,
+    PROFILE_MANAGER_PATH
 } from "../../AppPaths";
 
 import AppNavigation from "../common/AppNavigation";
@@ -71,6 +72,10 @@ const ManagerSubPage = ({
                     <FlexGridItem {...sideMenuGridOverrides}>
                     <Navigation
                         items={[
+                            {
+                                title: "Profile",
+                                itemId: `${PROFILE_MANAGER_PATH}`
+                            },
                             {
                                 title: "Expenses",
                                 itemId: `${EXPENSES_MANAGER_PATH}`,

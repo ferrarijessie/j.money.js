@@ -1,3 +1,8 @@
+export const getHeader = () => {
+    const tokenString = sessionStorage.getItem('token');
+    return {headers: {"X-api-key": JSON.parse(tokenString)}};
+};
+
 export const API_BASE_URL = "http://localhost:5065/api";
 
 
@@ -19,3 +24,10 @@ export const SAVINGS_URL = `${API_BASE_URL}/saving`;
 // SUMMARY
 export const SUMMARY_URL = `${API_BASE_URL}/summary`;
 export const SAVINGS_SUMMARY_URL = `${API_BASE_URL}/saving/summary`
+
+
+// AUTH
+export const AUTH_URL = `${API_BASE_URL}/auth`;
+export const LOGIN_URL = `${AUTH_URL}/login`;
+export const SIGNUP_URL = `${AUTH_URL}/signup`;
+export const USER_URL = `${AUTH_URL}/user`;

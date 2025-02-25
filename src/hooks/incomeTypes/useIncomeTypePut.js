@@ -1,11 +1,11 @@
 import { useMutation } from '@tanstack/react-query';
 import axios from "axios";
 
-import { INCOME_TYPES_URL } from '../endpoints';
+import { getHeader, INCOME_TYPES_URL } from '../endpoints';
 
 
 export const updateIncomeType = async ({id, payload = {}}) => {
-    const res = await axios.put(`${INCOME_TYPES_URL}/${id}`, payload);
+    const res = await axios.put(`${INCOME_TYPES_URL}/${id}`, payload, getHeader());
     return res.data;
 };
 

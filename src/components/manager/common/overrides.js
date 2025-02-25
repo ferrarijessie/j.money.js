@@ -119,6 +119,7 @@ export const managerSummaryGridOverrides = {
         Block: {
             style: {
                 borderTop: '1px solid #eeeeee',
+                padding: '10px 0px'
             }
         }
     }

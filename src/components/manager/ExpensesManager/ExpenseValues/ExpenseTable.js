@@ -35,7 +35,7 @@ const ExpenseTable = ({
     const columns = [
         CategoricalColumn({
             title: 'Type',
-            mapDataToValue: (data) => data.expenseTypeName,
+            mapDataToValue: (data) => data.typeName,
         }),
         CategoricalColumn({
             title: 'Category',

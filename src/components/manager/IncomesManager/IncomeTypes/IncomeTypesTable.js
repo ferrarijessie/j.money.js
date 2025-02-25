@@ -52,7 +52,7 @@ const IncomeTypesTable = ({
     };
 
     const routeChange = (item) =>{ 
-        let path = `${INCOME_TYPES_MANAGER_PATH}/${item?.itypeId}`; 
+        let path = `${INCOME_TYPES_MANAGER_PATH}/${item?.incomeTypeId}`; 
         navigate(path);
     }
 

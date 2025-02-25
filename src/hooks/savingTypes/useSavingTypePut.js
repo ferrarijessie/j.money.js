@@ -1,11 +1,11 @@
 import { useMutation } from '@tanstack/react-query';
 import axios from "axios";
 
-import { SAVING_TYPES_URL } from '../endpoints';
+import { getHeader, SAVING_TYPES_URL } from '../endpoints';
 
 
 export const updateSavingType = async ({id, payload = {}}) => {
-    const res = await axios.put(`${SAVING_TYPES_URL}/${id}`, payload);
+    const res = await axios.put(`${SAVING_TYPES_URL}/${id}`, payload, getHeader());
     return res.data;
 };
 
