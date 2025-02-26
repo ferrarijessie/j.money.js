@@ -29,7 +29,7 @@ const AppNavigation = ({
         <ThemeProvider theme={DarkTheme}>
             <AppNavBar
                 title="j.Money"
-                username={user['username']}
+                username={user['name'] !== "" ? user['name'] : user['username']}
                 usernameSubtitle={`#${user['id']}`}
                 userItems={UserItems()}
                 onUserItemSelect={item => userItemAction(item)}

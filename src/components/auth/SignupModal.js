@@ -48,11 +48,15 @@ const SignupModal = ({
     };
 
     const validateAndSave = () => {
+        const format = /[ `!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
         const requiredMessage = "This field is required"
         let errors = {}
 
         if (username === ""){
             errors["username"] = requiredMessage;
+        }
+        if (format.test(username) || username.includes(" ")){
+            errors["username"] = "Username can't have any special characters or empty spaces!";
         }
         if (password === "") {
             errors["password"] = requiredMessage;
