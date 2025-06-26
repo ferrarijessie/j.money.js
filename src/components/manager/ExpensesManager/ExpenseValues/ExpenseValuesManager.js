@@ -112,7 +112,7 @@ const ExpenseManager = () => {
                         onClose={onCloseModal}
                         onConfirmClick={onConfirmDelete}
                         title="Delete Expense"
-                        content={`Are you sure you want to delete Expense ${selectedExpense["expenseTypeName"]} - ${selectedExpense["month"]}/${selectedExpense["year"]}?`}
+                        content={`Are you sure you want to delete Expense ${selectedExpense["typeName"]} - ${selectedExpense["month"]}/${selectedExpense["year"]}?`}
                         isLoading={isSaveLoading}
                     />
                 </>

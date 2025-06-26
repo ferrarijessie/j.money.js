@@ -9,13 +9,14 @@ import { Navigation } from "baseui/side-navigation";
 import { Block } from "baseui/block";
 import { Heading, HeadingLevel } from 'baseui/heading';
 import { FlexGrid, FlexGridItem } from "baseui/flex-grid";
+import { StyledLink } from "baseui/link";
 import { styled } from "styletron-react";
 
 import { 
     EXPENSES_MANAGER_PATH, EXPENSE_TYPES_MANAGER_PATH, EXPENSE_VALUES_MANAGER_PATH,
     INCOMES_MANAGER_PATH, INCOME_TYPES_MANAGER_PATH, INCOME_VALUES_MANAGER_PATH,
     SAVINGS_MANAGER_PATH, SAVING_TYPES_MANGER_PATH, SAVING_VALUES_MANAGER_PATH,
-    PROFILE_MANAGER_PATH
+    PROFILE_MANAGER_PATH, MANAGER_PATH
 } from "../../AppPaths";
 
 import AppNavigation from "../common/AppNavigation";
@@ -36,6 +37,37 @@ import {
 const ContainerUI = styled(Block, {
     padding: "0px 160px",
 });
+
+const LinkUI = styled(StyledLink, {
+    textDecoration: "none !important",
+    color: "#000000 !important",
+    ":hover": {
+        color: "#5f0488 !important",
+    },
+});
+
+const navigationOverrides = {
+    overrides: {
+        NavItem: {
+            style: ({ $active }) => {
+                if (!$active)
+                    return {
+                        ":hover": {
+                            backgroundColor: "#F3F3F3",
+                        },
+                    };
+                return {
+                    backgroundColor: "#6c6c6c",
+                    borderLeftColor: "#000000",
+                    color: "#000000",
+                    ":hover": {
+                        color: "#5f0488",
+                    },
+                };
+            },
+        },
+    }
+};
 
 
 const ManagerSubPage = ({
@@ -59,8 +91,10 @@ const ManagerSubPage = ({
                             <HeadingLevel>
                                 <HeadingLevel>
                                     <Heading {...headingOverrides}>
-                                        <FontAwesomeIcon transform="left-4" icon={faGear} />
-                                        Manager
+                                        <LinkUI href={`${MANAGER_PATH}`}>
+                                            <FontAwesomeIcon transform="left-4" icon={faGear} />
+                                            Manager
+                                        </LinkUI>
                                     </Heading>
                                 </HeadingLevel>
                             </HeadingLevel>
@@ -126,6 +160,7 @@ const ManagerSubPage = ({
                             setActiveItemId(item?.itemId);
                             navigate(item?.itemId);
                         }}
+                        {...navigationOverrides}
                         />
                     </FlexGridItem>
                     <FlexGridItem {...childrenGridOverrides}>  

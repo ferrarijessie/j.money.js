@@ -69,6 +69,7 @@ const IncomeModal = ({
     };
 
     const clearFields = () => {
+        setFormErrors({});
         setIncomeType("");
         setIncomeTypeId(!!incomeTypeInitial ? incomeTypeInitial.incomeTypeId : 0)
         setValue(!!incomeTypeInitial ? incomeTypeInitial.baseValue.toFixed(2) : 0.00);

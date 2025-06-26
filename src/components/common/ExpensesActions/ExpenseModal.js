@@ -14,6 +14,7 @@ import { Select } from "baseui/select";
 import { Input, SIZE as InputSize } from "baseui/input";
 import { FlexGrid, FlexGridItem } from "baseui/flex-grid";
 import { FormControl } from "baseui/form-control";
+import { toaster, ToasterContainer } from "baseui/toast";
 
 import { useExpensePost } from "../../../hooks/expenses/useExpensePost"; 
 import { useExpensePut } from "../../../hooks/expenses/useExpensePut";
@@ -21,6 +22,14 @@ import { useExpensePut } from "../../../hooks/expenses/useExpensePut";
 
 const gridOverrides = {
     marginTop: '15px'
+};
+
+const toasterOverrides = {
+    ToastBody: {
+        style: {
+            width: '500px'
+        }
+    }
 };
 
 const ExpenseModal = ({
@@ -54,28 +63,33 @@ const ExpenseModal = ({
             'value': value
         };
 
-        if (!!expense) {
-            await editExpenseRequest({
-                id: expense['id'], 
-                payload: payload
-            });
-        } else {
-            await addExpenseRequest(payload);
-        }
-        await reload();
-
-        setIsLoading(false);
-        onClose();
+        try {
+            if (!!expense) {
+                await editExpenseRequest({
+                    id: expense['id'], 
+                    payload: payload
+                });
+            } else {
+                await addExpenseRequest(payload);
+            }
+            await reload();
+            setIsLoading(false);
+            onClose();
+        } catch (error) {
+            toaster.negative(`${error}`);
+            setIsLoading(false);
+        }   
     };
 
     const clearFields = () => {
+        setFormErrors({});
         setExpenseType("");
         setValue(!!expenseTypeInitial ? expenseTypeInitial.baseValue.toFixed(2) : 0.00);
         setMonth(moment().format('MM'));
         setYear(moment().format('YYYY'));
     };
 
-    const options = expenseTypes?.map(eType => ({
+    const options = expenseTypes?.map(eType => !eType.recurrent && ({
         label: eType['name'],
         id: eType['expenseTypeId'],
         baseValue: eType['baseValue']
@@ -131,7 +145,10 @@ const ExpenseModal = ({
     }, [expense]);
 
     return (
-        <Modal
+        <>
+         <ToasterContainer autoHideDuration={10000} overrides={toasterOverrides} />
+
+         <Modal
             onClose={handleClose}
             closeable
             isOpen={isOpen}
@@ -223,6 +240,7 @@ const ExpenseModal = ({
                 </ModalButton>
             </ModalFooter>
         </Modal>
+        </>
     );
 }
 

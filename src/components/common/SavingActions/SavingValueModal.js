@@ -69,6 +69,7 @@ const SavingValueModal = ({
     };
 
     const clearFields = () => {
+        setFormErrors({});
         setSavingType("");
         setSavingTypeId(!!savingTypeInitial ? savingTypeInitial.id : 0)
         setValue(!!savingTypeInitial ? savingTypeInitial.baseValue.toFixed(2) : 0.00);
