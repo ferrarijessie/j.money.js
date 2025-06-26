@@ -9,6 +9,7 @@ import { LightTheme, BaseProvider } from "baseui";
 import { setToken, getToken } from './utils';
 import AppRoutes from '../AppRoutes';
 import Login from './auth/Login';
+import { ContentWrapper } from './common/styles/globalStyles';
 
 
 const queryClient = new QueryClient();
@@ -22,7 +23,9 @@ function App() {
     return (
       <QueryClientProvider client={queryClient}>
         <StyletronProvider value={engine}>
-          <Login setToken={setToken} />
+          <ContentWrapper>
+            <Login setToken={setToken} />
+          </ContentWrapper>
         </StyletronProvider>
       </QueryClientProvider>
       )
@@ -32,9 +35,11 @@ function App() {
     <>      
       <QueryClientProvider client={queryClient}>
       <StyletronProvider value={engine}>
-        <BaseProvider theme={LightTheme}>
-          <AppRoutes />
-        </BaseProvider>
+        <ContentWrapper>
+          <BaseProvider theme={LightTheme}>
+            <AppRoutes />
+          </BaseProvider>
+        </ContentWrapper>
       </StyletronProvider>
     </QueryClientProvider>
     </>

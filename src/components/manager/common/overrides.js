@@ -74,7 +74,7 @@ export const childrenGridOverrides = {
     overrides: {
         Block: {
             style : {
-                padding: '0px 20px',
+                padding: '0px 20px 50px 20px',
                 borderRight: '1px solid #eeeeee',
                 borderBottom: '1px solid #eeeeee',
             }
