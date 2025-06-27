@@ -6,10 +6,11 @@ import { useNavigate } from "react-router-dom";
 import { FlexGrid, FlexGridItem } from "baseui/flex-grid";
 import { Tile, StyledParagraph } from "baseui/tile";
 import { Skeleton } from "baseui/skeleton";
-import { ListHeading, ListItem, ListItemLabel } from "baseui/list";
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faReceipt, faMoneyBills, faChevronRight } from "@fortawesome/free-solid-svg-icons";
+
+import SavingsLineChart from "../../common/metrics/SavingsLineChart";
 
 import { 
     SAVINGS_MANAGER_PATH, 
@@ -24,8 +25,6 @@ import { useSavingsList } from "../../../hooks/savings/useSavingsList";
 import { TagsContainerUI } from "../common/styled";
 import { 
     managerSummaryGridOverrides,
-    listHeadingOverrides, 
-    listItemOverrides 
 } from "../common/overrides";
 
 import ManagerSubPage from "../ManagerSubPage";
@@ -104,27 +103,11 @@ const SavingsManager = () => {
             
             <FlexGrid flexGridColumnCount={1} {...managerSummaryGridOverrides}>
                 <FlexGridItem>
-                    <ListHeading 
-                        heading="Savings This Month"
-                        endEnhancer={() => `R$ ${savingsListData.reduce((acc, p) => acc + p.currentMonthValue, 0).toFixed(2)}`}
-                        {...listHeadingOverrides}
-                    />
-                    {isSavingsListLoading ?
-                        <Skeleton
-                        rows={5}
-                        height="20px"
-                        animation
-                    />
-                    :
-                        (savingsListData.map(saving => 
-                                <ListItem
-                                    endEnhancer={() => `R$ ${saving.currentMonthValue.toFixed(2)}`}
-                                    {...listItemOverrides}
-                                >
-                                    <ListItemLabel>{saving.name}</ListItemLabel>
-                                </ListItem>
-                        ))
-                    }
+                    <FlexGrid flexGridColumnCount={1} gap="scale800" style={{ marginTop: '20px' }}>
+                        <FlexGridItem>
+                            <SavingsLineChart savingsData={savingsData} />
+                        </FlexGridItem>
+                    </FlexGrid>
                 </FlexGridItem>
             </FlexGrid>
             

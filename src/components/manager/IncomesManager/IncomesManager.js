@@ -5,10 +5,12 @@ import { useNavigate } from "react-router-dom";
 
 import { Tile, StyledParagraph } from "baseui/tile";
 import { Skeleton } from "baseui/skeleton";
-import { ListHeading, ListItem, ListItemLabel } from "baseui/list";
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faReceipt, faMoneyBills, faChevronRight } from "@fortawesome/free-solid-svg-icons";
+
+import RecurrentMetrics from "../../common/metrics/RecurrentMetrics";
+import CategoryMetrics from "../../common/metrics/CategoryMetrics";
 
 import { 
     INCOMES_MANAGER_PATH, 
@@ -23,8 +25,6 @@ import { useIncomesList } from "../../../hooks/incomes/useIncomesList";
 import { TagsContainerUI } from "../common/styled";
 import { 
     managerSummaryGridOverrides,
-    listHeadingOverrides, 
-    listItemOverrides 
 } from "../common/overrides";
 
 import ManagerSubPage from "../ManagerSubPage";
@@ -104,27 +104,28 @@ const IncomesManager = () => {
             
             <FlexGrid flexGridColumnCount={1} {...managerSummaryGridOverrides}>
                 <FlexGridItem>
-                    <ListHeading 
-                        heading="Incomes This Month"
-                        endEnhancer={() => `R$ ${incomesListData.reduce((acc, p) => acc + p.value, 0).toFixed(2)}`}
-                        {...listHeadingOverrides}
-                    />
-                    {isIncomesListLoading ?
-                        <Skeleton
-                        rows={5}
-                        height="20px"
-                        animation
-                    />
-                    :
-                        (incomesListData.map(income => 
-                                <ListItem
-                                    endEnhancer={() => `R$ ${income.value.toFixed(2)}`}
-                                    {...listItemOverrides}
-                                >
-                                    <ListItemLabel>{income.typeName}</ListItemLabel>
-                                </ListItem>
-                        ))
-                    }
+                    <FlexGrid flexGridColumnCount={2} gap="scale800" style={{ marginTop: '20px' }}>
+                        <FlexGridItem>
+                            <RecurrentMetrics 
+                                recurrentTotal={incomesListData
+                                    .filter(income => typesData.find(type => type.incomeTypeId === income.typeId)?.recurrent)
+                                    .reduce((acc, p) => acc + p.value, 0)
+                                }
+                                nonRecurrentTotal={incomesListData
+                                    .filter(income => !typesData.find(type => type.incomeTypeId === income.typeId)?.recurrent)
+                                    .reduce((acc, p) => acc + p.value, 0)
+                                }
+                            />
+                        </FlexGridItem>
+                        <FlexGridItem style={{ borderLeft: '1px solid #ccc' }}>
+                            <CategoryMetrics 
+                                totals={incomesListData.reduce((acc, income) => {
+                                    acc[income.typeName] = (acc[income.typeName] || 0) + income.value;
+                                    return acc;
+                                }, {})}
+                            />
+                        </FlexGridItem>
+                    </FlexGrid>
                 </FlexGridItem>
             </FlexGrid>
             

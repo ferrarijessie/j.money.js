@@ -148,7 +148,10 @@ const FinancialGraphs = () => {
                     <LineChart data={data}>
                         <CartesianGrid strokeDasharray="3 3" />
                         <XAxis dataKey="name" />
-                        <YAxis />
+                        <YAxis 
+                            tickFormatter={(value) => `R$ ${Number(value).toFixed(2)}`}
+                            style={{ fontSize: '8px' }}
+                        />
                         <Tooltip />
                         <Legend />
                         <Line type="monotone" dataKey="income" stroke="#2ecc71" name="Income" />

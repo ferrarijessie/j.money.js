@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 
 import { Tile, StyledParagraph } from "baseui/tile";
 import { Skeleton } from "baseui/skeleton";
-import { ListHeading, ListItem, ListItemLabel } from "baseui/list";
+import { ListHeading } from "baseui/list";
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faReceipt, faMoneyBills, faChevronRight } from "@fortawesome/free-solid-svg-icons";
@@ -16,6 +16,9 @@ import {
     EXPENSE_VALUES_MANAGER_PATH,
 } from "../../../AppPaths";
 
+import RecurrentMetrics from "../../../components/common/metrics/RecurrentMetrics";
+import CategoryMetrics from "../../../components/common/metrics/CategoryMetrics";
+
 import { useExpenseTypes } from "../../../hooks/expenseTypes/useExpenseTypes";
 import { useExpenses } from "../../../hooks/expenses/useExpenses";
 import { useExpensesList } from "../../../hooks/expenses/useExpensesList";
@@ -24,11 +27,17 @@ import { TagsContainerUI } from "../common/styled";
 import { 
     managerSummaryGridOverrides,
     listHeadingOverrides, 
-    listItemOverrides 
 } from "../common/overrides";
 
 import ManagerSubPage from "../ManagerSubPage";
 import { FlexGrid, FlexGridItem } from "baseui/flex-grid";
+import { styled } from 'baseui';
+
+const VerticalDivider = styled('div', {
+    width: '1px',
+    backgroundColor: '#ccc',
+    height: '100%',
+});
 
 
 const ExpenseManager = () => {
@@ -59,6 +68,37 @@ const ExpenseManager = () => {
         moment().format('Y'),
         moment().format('M')
     );
+
+    // Create a map of type IDs to their recurrence status
+    const typeRecurrenceMap = new Map(
+        typesData.map(type => [type.expenseTypeId, type.recurrent])
+    );
+
+    // Calculate metrics using the type recurrence map
+    const metricsData = [
+        {
+            name: 'Recurrent',
+            value: expensesListData.reduce((acc, expense) => {
+                const isRecurrent = typeRecurrenceMap.get(expense.typeId);
+                return isRecurrent ? acc + (typeof expense.value === 'number' ? expense.value : 0) : acc;
+            }, 0)
+        },
+        {
+            name: 'Non-Recurrent',
+            value: expensesListData.reduce((acc, expense) => {
+                const isRecurrent = typeRecurrenceMap.get(expense.typeId);
+                return !isRecurrent ? acc + (typeof expense.value === 'number' ? expense.value : 0) : acc;
+            }, 0)
+        }
+    ];
+
+    // Calculate totals per category using category string
+    const categoryTotals = expensesListData.reduce((acc, expense) => {
+        const categoryName = expense.category;
+        const value = typeof expense.value === 'number' ? expense.value : 0;
+        acc[categoryName] = (acc[categoryName] || 0) + value;
+        return acc;
+    }, {});
 
     return (
         <ManagerSubPage 
@@ -102,30 +142,23 @@ const ExpenseManager = () => {
                     </>
                 }
             </TagsContainerUI>
-            
+
             <FlexGrid flexGridColumnCount={1} {...managerSummaryGridOverrides}>
                 <FlexGridItem>
-                    <ListHeading 
-                        heading="Expenses This Month"
-                        endEnhancer={() => `R$ ${expensesListData.reduce((acc, p) => acc + p.value, 0).toFixed(2)}`}
-                        {...listHeadingOverrides}
-                    />
-                    {isExpensesListLoading ?
-                        <Skeleton
-                        rows={5}
-                        height="20px"
-                        animation
-                    />
-                    :
-                        (expensesListData.map(expense => 
-                                <ListItem
-                                    endEnhancer={() => `R$ ${expense.value.toFixed(2)}`}
-                                    {...listItemOverrides}
-                                >
-                                    <ListItemLabel>{expense.typeName}</ListItemLabel>
-                                </ListItem>
-                        ))
-                    }
+                    <FlexGrid flexGridColumnCount={2} gap="scale800" style={{ marginTop: '20px' }}>
+                        <FlexGridItem>
+                            <RecurrentMetrics 
+                                recurrentTotal={metricsData.find(m => m.name === 'Recurrent').value}
+                                nonRecurrentTotal={metricsData.find(m => m.name === 'Non-Recurrent').value}
+                            />
+                        </FlexGridItem>
+
+                        <FlexGridItem style={{ borderLeft: '1px solid #ccc' }}>
+                            <CategoryMetrics
+                                totals={categoryTotals}
+                            />
+                        </FlexGridItem>
+                    </FlexGrid>
                 </FlexGridItem>
             </FlexGrid>
             
