@@ -60,7 +60,7 @@ const ExpenseManager = () => {
     const onConfirmDelete = async () => {
         setIsSaveLoading(true);
 
-        await deleteExpenseRequest(selectedExpense["expenseId"]);
+        await deleteExpenseRequest(selectedExpense["id"]);
         await reload();
         onCloseModal();
 

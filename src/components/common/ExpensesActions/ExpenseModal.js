@@ -89,7 +89,7 @@ const ExpenseModal = ({
         setYear(moment().format('YYYY'));
     };
 
-    const options = expenseTypes?.map(eType => !eType.recurrent && ({
+    const options = expenseTypes?.map(eType => ({
         label: eType['name'],
         id: eType['expenseTypeId'],
         baseValue: eType['baseValue']

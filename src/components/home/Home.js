@@ -13,7 +13,7 @@ import { StatefulMenu } from "baseui/menu";
 import { FlexGrid, FlexGridItem } from "baseui/flex-grid";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faMoneyBills, faWallet, faSackDollar } from "@fortawesome/free-solid-svg-icons";
+import { faMoneyBills, faWallet, faSackDollar, faScaleBalanced } from "@fortawesome/free-solid-svg-icons";
 
 import { useSummaryList } from "../../hooks/summary/useSummaryList";
 import { useExpenseDelete } from "../../hooks/expenses/useExpenseDelete";
@@ -98,6 +98,7 @@ const savingsTileOverrides = {
         Root: {
             style: ({ $selected }) => ({
                 marginLeft: "30px",
+                marginRight: "30px",
                 outline: '#aecfde solid',
                 backgroundColor: "#f0faff",
                 height: "110px",
@@ -108,6 +109,22 @@ const savingsTileOverrides = {
                     $selected
                         ? "inset 0px 0px 0px 3px #345c6f"
                         : null
+            })
+        }
+    }
+};
+
+const balanceTileOverrides = {
+    overrides: {
+        Root: {
+            style: ({ $selected }) => ({
+                marginRight: "30px",
+                outline: '#b8aede solid',
+                backgroundColor: "#f8f0ff",
+                height: "110px",
+                ":hover": {
+                    backgroundColor: '#f8f0ff !important',
+                },
             })
         }
     }
@@ -344,6 +361,14 @@ const Home = () => {
         close();
     };
 
+    const getBalance = () => {
+        const totalSavings = data.reduce((acc, p) => p.model === 'saving' && p.status === false ? acc + p.value : acc, 0);
+        const totalExpense = data.reduce((acc, p) => p.model === 'expense' ? acc + p.value : acc, 0);
+        const totalIncome = data.reduce((acc, p) => p.model === 'income' ? acc + p.value : acc, 0);
+        return (totalIncome - (totalSavings + totalExpense)).toFixed(2);
+    };
+
+
     return (
         <>
             <AppNavigation 
@@ -391,24 +416,33 @@ const Home = () => {
                             selected={isSavingsSelected}
                             {...savingsTileOverrides}
                         />
+
+                        <StatefulPopover
+                            focusLock
+                            placement={PLACEMENT.bottom}
+                            content={({close}) => (
+                                <StatefulMenu 
+                                    items={ITEMS}
+                                    onItemSelect={(option) => openAddModal(option, close)}
+                                />
+                            )}
+                        >
+                            <Button shape={SHAPE.circle}>
+                                <Plus />
+                            </Button>
+                        </StatefulPopover>
                     </FlexGridItem>
 
                     {filteredData.length > 0 && 
                         <FlexGridItem {...addButtonItemOverrides}>
-                            <StatefulPopover
-                                focusLock
-                                placement={PLACEMENT.bottom}
-                                content={({close}) => (
-                                    <StatefulMenu 
-                                        items={ITEMS}
-                                        onItemSelect={(option) => openAddModal(option, close)}
-                                    />
-                                )}
-                            >
-                                <Button shape={SHAPE.circle}>
-                                    <Plus />
-                                </Button>
-                            </StatefulPopover>
+                            <Tile
+                                leadingContent={() => <FontAwesomeIcon icon={faScaleBalanced} size="2xl" />}
+                                label={`R$ ${getBalance()}`}
+                                children={<TileParagraph>Balance</TileParagraph>}
+                                headerAlignment={ALIGNMENT.center}
+                                bodyAlignment={ALIGNMENT.center}
+                                {...balanceTileOverrides}
+                            />
                         </FlexGridItem>
                     }
 
