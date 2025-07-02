@@ -20,7 +20,7 @@ const FinancialGraphs = () => {
         const monthlyTotals = Array(12).fill(0);
         items.forEach(item => {
             const month = parseInt(item.month) - 1;
-            if (!isNaN(month) && month >= 0 && month < 12) {
+            if (!isNaN(month) && month >= 0 && month < 12 && item.year+'' === moment().format('YYYY')) {
                 monthlyTotals[month] += parseFloat(item[valueKey] || 0);
             }
         });
@@ -41,11 +41,11 @@ const FinancialGraphs = () => {
 
     const monthlyIncomeTotals = calculateMonthlyTotal(incomesData || [], 'value');
     const monthlyExpensesTotals = calculateMonthlyTotal(expensesData, 'value');
-    const monthlySavingsTotals = calculateMonthlyTotal(savingsData, 'currentMonthValue');
+    const monthlySavingsTotals = calculateMonthlyTotal(savingsData, 'value');
 
     const yearlyIncomeTotals = calculateYearlyTotal(incomesData || [], 'value');
     const yearlyExpensesTotals = calculateYearlyTotal(expensesData, 'value');
-    const yearlySavingsTotals = calculateYearlyTotal(savingsData, 'currentMonthValue');
+    const yearlySavingsTotals = calculateYearlyTotal(savingsData, 'value');
 
     const monthlyData = Array.from({ length: 12 }, (_, i) => {
         const monthName = moment().month(i).format('MMM');
