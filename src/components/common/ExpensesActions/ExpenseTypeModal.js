@@ -77,14 +77,14 @@ const ExpenseTypeModal = ({
         setIsLoading(false);
     };
 
-    const clearFields = () => {
+    const clearFields = React.useCallback(() => {
         setFormErrors({});
         setTypeName(expenseType ? expenseType["name"] : "");
         setCategory(expenseType ? expenseType["category"].toUpperCase() : "");
         setRecurrent(expenseType ? expenseType["recurrent"] : false);
         setBaseValue(expenseType ? expenseType["baseValue"] : 0.00);
         setEndDate(expenseType && expenseType["endDate"] ? new Date(expenseType["endDate"]) : new Date());
-    };
+    }, [expenseType]);
 
     React.useEffect(() => {
         if (expenseType !== null) {
@@ -97,9 +97,9 @@ const ExpenseTypeModal = ({
         else {
             clearFields();
         }
-    }, [expenseType]);
+    }, [expenseType, clearFields]);
 
-    const options = [
+    const options = React.useMemo(() => [
         {
         label: "HOUSE",
         id: "house"
@@ -124,7 +124,7 @@ const ExpenseTypeModal = ({
         label: "HEALTH",
         id: "health"
         },
-    ];
+    ], []);
 
     function mapOptionToString(option) {
         return option.label;

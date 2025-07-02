@@ -81,13 +81,13 @@ const ExpenseModal = ({
         }   
     };
 
-    const clearFields = () => {
+    const clearFields = React.useCallback(() => {
         setFormErrors({});
         setExpenseType("");
         setValue(!!expenseTypeInitial ? expenseTypeInitial.baseValue.toFixed(2) : 0.00);
         setMonth(moment().format('MM'));
         setYear(moment().format('YYYY'));
-    };
+    }, [expenseTypeInitial]);
 
     const options = expenseTypes?.map(eType => ({
         label: eType['name'],
@@ -142,7 +142,7 @@ const ExpenseModal = ({
         else {
             clearFields();
         }
-    }, [expense]);
+    }, [expense, clearFields]);
 
     return (
         <>
