@@ -10,6 +10,8 @@ import { setToken, getToken } from './utils';
 import AppRoutes from '../AppRoutes';
 import Login from './auth/Login';
 import { ContentWrapper } from './common/styles/globalStyles';
+import store from '../store';
+import { Provider } from 'react-redux';
 
 
 const queryClient = new QueryClient();
@@ -21,27 +23,31 @@ function App() {
 
   if(!token) {
     return (
-      <QueryClientProvider client={queryClient}>
-        <StyletronProvider value={engine}>
-          <ContentWrapper>
-            <Login setToken={setToken} />
-          </ContentWrapper>
-        </StyletronProvider>
-      </QueryClientProvider>
+      <Provider store={store}>
+        <QueryClientProvider client={queryClient}>
+          <StyletronProvider value={engine}>
+            <ContentWrapper>
+              <Login setToken={setToken} />
+            </ContentWrapper>
+          </StyletronProvider>
+        </QueryClientProvider>
+      </Provider>
       )
   }
 
   return (
-    <>      
+    <>     
+    <Provider store={store}> 
       <QueryClientProvider client={queryClient}>
-      <StyletronProvider value={engine}>
-        <ContentWrapper>
-          <BaseProvider theme={LightTheme}>
-            <AppRoutes />
-          </BaseProvider>
-        </ContentWrapper>
-      </StyletronProvider>
-    </QueryClientProvider>
+        <StyletronProvider value={engine}>
+          <ContentWrapper>
+            <BaseProvider theme={LightTheme}>
+              <AppRoutes />
+            </BaseProvider>
+          </ContentWrapper> 
+        </StyletronProvider>
+      </QueryClientProvider>
+    </Provider>
     </>
     
   );

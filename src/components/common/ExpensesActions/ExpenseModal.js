@@ -15,6 +15,8 @@ import { Input, SIZE as InputSize } from "baseui/input";
 import { FlexGrid, FlexGridItem } from "baseui/flex-grid";
 import { FormControl } from "baseui/form-control";
 import { toaster, ToasterContainer } from "baseui/toast";
+import { change, reduxForm, Field } from 'redux-form';
+import { connect } from 'react-redux';
 
 import { useExpensePost } from "../../../hooks/expenses/useExpensePost"; 
 import { useExpensePut } from "../../../hooks/expenses/useExpensePut";
@@ -32,35 +34,37 @@ const toasterOverrides = {
     }
 };
 
-const ExpenseModal = ({
+let ExpenseModal = ({
     isOpen,
     onClose,
     reload,
     expenseTypes = [],
     expenseTypeInitial = null,
-    expense = null
+    expense = null,
+    dispatch,
+    handleSubmit
 }) => {
     
     const [isLoading, setIsLoading] = React.useState(false);
-    const [expenseType, setExpenseType] = React.useState("");
-    const [expenseTypeId, setExpenseTypeId] = React.useState(!!expenseTypeInitial ? expenseTypeInitial.expenseTypeId : 0);
-    const [value, setValue] = React.useState(!!expenseTypeInitial ? expenseTypeInitial.baseValue.toFixed(2) : 0.00);
-    const [month, setMonth] = React.useState(moment().format('MM'));
-    const [year, setYear] = React.useState(moment().format('YYYY'));
-
-    const [formErrors, setFormErrors] = React.useState({});
 
     const { mutateAsync: addExpenseRequest } = useExpensePost();
     const { mutateAsync: editExpenseRequest } = useExpensePut();
 
-    const onSaveClick = async (typeId, value, month, year) => {
+    const onChangeOption = (value, input) => {
+        input.onChange(value);
+        if (value[0].baseValue) {
+            dispatch(change('expenseForm', 'value', value[0].baseValue.toFixed(2)));
+        }
+    }; 
+
+    const onSubmit = async (values) => {
         setIsLoading(true);
 
         const payload = {
-            'year': year,
-            'month': month,
-            'typeId': typeId,
-            'value': value
+            'year': values.year,
+            'month': values.month[0].id,
+            'typeId': values.expenseType[0].id,
+            'value': values.value
         };
 
         try {
@@ -81,167 +85,167 @@ const ExpenseModal = ({
         }   
     };
 
-    const clearFields = React.useCallback(() => {
-        setFormErrors({});
-        setExpenseType("");
-        setValue(!!expenseTypeInitial ? expenseTypeInitial.baseValue.toFixed(2) : 0.00);
-        setMonth(moment().format('MM'));
-        setYear(moment().format('YYYY'));
-    }, [expenseTypeInitial]);
-
     const options = expenseTypes?.map(eType => ({
         label: eType['name'],
         id: eType['expenseTypeId'],
         baseValue: eType['baseValue']
     }));
 
-    const handleClose = () => {
-        clearFields();
-        onClose();
-    };
+    const months = moment.months();
+    const monthOptions = months.map((month, index) => ({
+        label: month,
+        id: index+1,
+    }));
 
-    const validateAndSave = () => {
-        const requiredMessage = "This field is required"
-        let errors = {}
-
-        if (!expenseTypeInitial && expenseType === ""){
-            errors["type"] = requiredMessage;
-        }
-        if (value <= 0) {
-            errors["value"] = "Please specify a base value"
-        }
-        if (month <= 0){
-            errors["month"] = requiredMessage;
-        }
-        if (year <= 0){
-            errors["year"] = requiredMessage;
-        }
+    const renderField = ({ input, label, type, meta: { touched, error } }) => (
+          <FormControl label={label} error={touched && error && error}>
+            <Input
+              {...input}
+              type={type}
+              size={InputSize.compact}
+            />
+          </FormControl>
+        );
         
-        if (Object.keys(errors).length > 0) {
-            setFormErrors(errors);
-            return;
-        }
-        onSaveClick(expenseTypeId, value, month, year);
-        handleClose();
-    };
-
-    const handleOptionchange = (option) => {
-        setExpenseType(option);
-        setExpenseTypeId(option['0']['id']);
-        setValue(option[0]['baseValue'].toFixed(2));
-    };
-
+    const renderSelectField = ({ input, label, options, placeholder, disabled, meta: { touched, error } }) => (
+        <FormControl label={label} error={touched && error && error}>
+            <Select
+                options={options}
+                value={input.value}
+                size={InputSize.compact}
+                onChange={({ value }) => onChangeOption(value, input)}
+                placeholder={!input.value ? placeholder : null}
+                labelKey="label"
+                valueKey="id"
+                disabled={disabled}
+            />
+        </FormControl>
+    );
+    
     React.useEffect(() => {
-        if (expense !== null) {
-            setExpenseType(expense.typeName);
-            setExpenseTypeId(expense.typeId)
-            setValue(expense.value.toFixed(2));
-            setMonth(expense.month);
-            setYear(expense.year);
+        dispatch(change('expenseForm', 'month', [monthOptions.find(m => m.id === parseInt(moment().format('MM')))]));
+        dispatch(change('expenseForm', 'year', moment().format('YYYY')));
+
+        if (!!expenseTypeInitial) {
+            dispatch(change('expenseForm', 'expenseType', [options.find(e => e.id === expenseTypeInitial)]));
+            dispatch(change('expenseForm', 'value', expenseTypeInitial.baseValue.toFixed(2)));
         }
-        else {
-            clearFields();
+
+        if (!!expense) {
+            dispatch(change('expenseForm', 'expenseType', [options.find(e => e.id === expense['typeId'])]));
+            dispatch(change('expenseForm', 'value', expense['value'].toFixed(2)));
+            dispatch(change('expenseForm', 'month', [monthOptions.find(m => m.id === expense['month'])]));
+            dispatch(change('expenseForm', 'year', expense['year']));
         }
-    }, [expense, clearFields]);
+    }, [dispatch, monthOptions, expenseTypeInitial, options, expense]);
 
     return (
         <>
          <ToasterContainer autoHideDuration={10000} overrides={toasterOverrides} />
-
          <Modal
-            onClose={handleClose}
+            onClose={onClose}
             closeable
             isOpen={isOpen}
             animate
             autoFocus
             size={SIZE.default}
             role={ROLE.dialog}
-        >
-            <ModalHeader>Add Expense</ModalHeader>
-            <ModalBody>
-                <FlexGrid flexGridColumnCount={2} flexGridColumnGap={"5px"} {...gridOverrides}>
-                    <FlexGridItem>
-                    <FormControl 
-                        label="Expense Type *"
-                        error={"type" in formErrors ? formErrors["type"] : null}
-                    >
-                        {!!expenseTypeInitial || expense ?
-                            <Input 
-                                value={!!expenseTypeInitial ? expenseTypeInitial.name : expense.typeName}
-                                disabled
-                                size={InputSize.compact}
-                            /> 
-                        :
-                            <Select
-                                value={expenseType}
-                                onChange={({ value }) => handleOptionchange(value)}
+            >
+            <ModalHeader>Edit Expense</ModalHeader>
+         
+            <form onSubmit={handleSubmit(onSubmit)}>
+                <ModalBody>
+                    <FlexGrid flexGridColumnCount={2} flexGridColumnGap={"5px"} {...gridOverrides}>
+                        <FlexGridItem>
+                            <Field
+                                name="expenseType"
+                                type="select"
                                 options={options}
-                                size={InputSize.compact}
-                                labelKey="label"
-                                valueKey="id"
+                                component={renderSelectField}
+                                label="Expense Type"
+                                placeholder="Select an expense type"
+                                disabled={!!expense || !!expenseTypeInitial}
                             />
-                        }
-                    </FormControl>
-                    </FlexGridItem>
-                    <FlexGridItem>
-                        <FormControl 
-                            label="Value *"
-                            error={"value" in formErrors ? formErrors["value"] : null}
-                        >
-                            <Input
-                                startEnhancer="R$"
-                                value={value}
-                                onChange={e => setValue(e.target.value)}
-                                placeholder="Value..."
-                                size={InputSize.compact}
+                        </FlexGridItem>
+                        <FlexGridItem>
+                            <Field
+                                name="value"
                                 type="number"
+                                component={renderField}
+                                label="Value"
                             />
-                        </FormControl>
-                    </FlexGridItem>
-                </FlexGrid>
+                        </FlexGridItem>
+                    </FlexGrid>
 
-                <FlexGrid flexGridColumnCount={2} flexGridColumnGap={"5px"} {...gridOverrides}>
-                    <FlexGridItem>
-                        <FormControl 
-                            label="Month"
-                            error={"month" in formErrors ? formErrors["month"] : null}
-                        >
-                            <Input 
-                                value={month}
-                                onChange={e => setMonth(e.target.value)}
-                                placeholder="Specify Month..."
-                                size={InputSize.compact}
+                    <FlexGrid flexGridColumnCount={2} flexGridColumnGap={"5px"} {...gridOverrides}>
+                        <FlexGridItem>
+                            <Field
+                                name="month"
                                 type="number"
+                                component={renderSelectField}
+                                options={monthOptions}
+                                label="Month"
+                                placeholder="Select month"
+                                disabled={false}
                             />
-                        </FormControl>
-                    </FlexGridItem>
-                    <FlexGridItem>
-                        <FormControl 
-                            label="Year"
-                            error={"year" in formErrors ? formErrors["year"] : null}
-                        >
-                            <Input 
-                                value={year}
-                                onChange={e => setYear(e.target.value)}
-                                placeholder="Specify Year..."
-                                size={InputSize.compact}
+                        </FlexGridItem>
+                        <FlexGridItem>
+                            <Field
+                                name="year"
                                 type="number"
+                                component={renderField}
+                                label="Year"
                             />
-                        </FormControl>
-                    </FlexGridItem>
-                </FlexGrid>
-            </ModalBody>
-            <ModalFooter>
-                <ModalButton kind={ButtonKind.tertiary} onClick={handleClose}>
-                    Cancel
-                </ModalButton>
-                <ModalButton type={'submit'} onClick={() => validateAndSave()} isLoading={isLoading}>
-                    Save
-                </ModalButton>
-            </ModalFooter>
+                        </FlexGridItem>
+                    </FlexGrid>
+                </ModalBody>
+                <ModalFooter>
+                    <ModalButton 
+                        kind={ButtonKind.tertiary} 
+                        onClick={() => onClose()}
+                        type={'button'}
+                    >
+                        Cancel
+                    </ModalButton>
+                    <ModalButton 
+                        type={'submit'} 
+                        isLoading={isLoading}
+                    >
+                        Save
+                    </ModalButton>
+                </ModalFooter>
+            </form>
         </Modal>
         </>
     );
 }
 
-export default ExpenseModal;
+const validate = (values) => {
+    const errors = {};
+    
+    if (!values.expenseType) {
+        errors.expenseType = 'Required';
+    }
+    
+    if (!values.value) {
+        errors.value = 'Required';
+    }
+
+    if (!values.month) {
+        errors.month = 'Required';
+    }
+
+    if (!values.year) {
+        errors.year = 'Required';
+    }
+    
+    return errors;
+};
+
+ExpenseModal = reduxForm({
+    form: 'expenseForm',
+    enableReinitialize: true,
+    validate
+})(ExpenseModal);
+
+export default connect()(ExpenseModal);
