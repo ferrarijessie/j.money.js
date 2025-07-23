@@ -3,8 +3,7 @@ import { Check, DeleteAlt, Overflow } from "baseui/icon";
 import {
     StatefulDataTable,
     CategoricalColumn,
-    NumericalColumn,
-  } from "baseui/data-table";
+} from "baseui/data-table";
 
 import { useExpensePut } from "../../../../hooks/expenses/useExpensePut";
 import moment from "moment";
@@ -53,10 +52,9 @@ const ExpenseTable = ({
             title: 'Paid',
             mapDataToValue:  (data) => data.paid ? 'OK' : '-',
         }),
-        NumericalColumn({
+        CategoricalColumn({
             title: 'Value',
-            precision: 2,
-            mapDataToValue:  (data) => data.value,
+            mapDataToValue:  (data) => `R$ ${data.value.toFixed(2)}`,
         }), 
     ];
 

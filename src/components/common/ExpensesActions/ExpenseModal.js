@@ -85,6 +85,7 @@ let ExpenseModal = ({
         }   
     };
 
+    
     const options = expenseTypes?.map(eType => ({
         label: eType['name'],
         id: eType['expenseTypeId'],
@@ -127,7 +128,7 @@ let ExpenseModal = ({
         dispatch(change('expenseForm', 'year', moment().format('YYYY')));
 
         if (!!expenseTypeInitial) {
-            dispatch(change('expenseForm', 'expenseType', [options.find(e => e.id === expenseTypeInitial)]));
+            dispatch(change('expenseForm', 'expenseType', [options.find(e => e.id === expenseTypeInitial.expenseTypeId)]));
             dispatch(change('expenseForm', 'value', expenseTypeInitial.baseValue.toFixed(2)));
         }
 

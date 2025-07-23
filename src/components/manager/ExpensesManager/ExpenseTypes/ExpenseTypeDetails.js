@@ -54,7 +54,7 @@ const ExpenseTypeDetails = () => {
 
     const onClickEdit = (expense) => {
         setSelectedExpense(expense);
-        setIsEditModalOpen(true);
+        setIsModalOpen(true);
     };
 
     const onClickDelete = (expense) => {
@@ -65,14 +65,16 @@ const ExpenseTypeDetails = () => {
     const onConfirmDelete = async () => {
         setIsSaveLoading(true);
 
-        await deleteExpenseRequest(selectedExpense["expenseId"]);
+        await deleteExpenseRequest(selectedExpense["id"]);
         await reload();
-        onCloseModal();
 
+        setSelectedExpense(null);
         setIsSaveLoading(false);
+        
+        onCloseModal();
     };
 
-    if (isLoading) {
+    if (!!isLoading || !!isSaveLoading) {
         return (
             <ManagerSubPage 
                 activeItem={EXPENSE_TYPES_MANAGER_PATH} 
@@ -165,7 +167,7 @@ const ExpenseTypeDetails = () => {
                 isOpen={isModalOpen}
                 onClose={onCloseModal}
                 reload={reload}
-                expenseTypes={null}
+                expenseTypes={[expenseTypeData]}
                 expenseTypeInitial={expenseTypeData} 
                 expense={selectedExpense}
             />
