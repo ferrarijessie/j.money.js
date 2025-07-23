@@ -13,11 +13,14 @@ import {
     Checkbox,
     LABEL_PLACEMENT
 } from "baseui/checkbox";
-import { Combobox } from "baseui/combobox";
+import { Select } from "baseui/select";
 import { Input, SIZE as InputSize } from "baseui/input";
 import { FlexGrid, FlexGridItem } from "baseui/flex-grid";
 import { FormControl } from "baseui/form-control";
 import { Datepicker } from "baseui/datepicker";
+import { change, reduxForm, Field } from 'redux-form';
+import { connect } from 'react-redux';
+import { toaster, ToasterContainer } from "baseui/toast";
 
 import { useExpenseTypesPost } from "../../../hooks/expenseTypes/useExpenseTypePost";
 import { useExpenseTypePut } from "../../../hooks/expenseTypes/useExpenseTypePut";
@@ -34,70 +37,64 @@ const checkboxItemOverrides = {
     paddingTop: '17px',
 };
 
-const ExpenseTypeModal = ({
+const toasterOverrides = {
+    ToastBody: {
+        style: {
+            width: '500px'
+        }
+    }
+};
+
+let ExpenseTypeModal = ({
     isOpen,
     onClose,
     reload,
-    expenseType = null
+    expenseType = null,
+    dispatch,
+    handleSubmit
 }) => {
     
     const [isLoading, setIsLoading] = React.useState(false);
-    const [typeName, setTypeName] = React.useState("");
-    const [category, setCategory] = React.useState("");
     const [recurrent, setRecurrent] = React.useState(false);
-    const [baseValue, setBaseValue] = React.useState(0.00);
-    const [endDate, setEndDate] = React.useState(new Date());
-
-    const [formErrors, setFormErrors] = React.useState({});
 
     const { mutateAsync: addExpenseTypeRequest } = useExpenseTypesPost();
     const { mutateAsync: editExpenseTypeRequest } = useExpenseTypePut();
 
-    const onSaveClick = async (typeName, category, recurrent, baseValue = 0) => {
+    const onSubmit = async (values) => {
         setIsLoading(true);
 
         const payload = {
-            'name': typeName,
-            'category': category,
-            'recurrent': recurrent,
-            'baseValue': baseValue,
-            'endDate': endDate ? endDate.toISOString().split('T')[0] : null
+            'name': values.name,
+            'category': values.category[0].id,
+            'recurrent': values.recurrent,
+            'baseValue': values.baseValue,
+            'endDate': values.endDate ? values.endDate.toISOString().split('T')[0] : null
         }
 
-        if (expenseType !== null) {
-            await editExpenseTypeRequest({
-                id: expenseType["expenseTypeId"], 
-                payload: payload
-            });
-        }
-        else {
-            await addExpenseTypeRequest(payload);
-        }
-        await reload();
-        setIsLoading(false);
+        try {
+            if (expenseType !== null) {
+                await editExpenseTypeRequest({
+                    id: expenseType["expenseTypeId"], 
+                    payload: payload
+                });
+            }
+            else {
+                await addExpenseTypeRequest(payload);
+            }
+            toaster.positive("Expense type saved successfully");
+            await reload();
+            setIsLoading(false);
+            onClose();
+        } catch (error) {
+            toaster.negative(`${error}`);
+            setIsLoading(false);
+        }   
     };
 
-    const clearFields = React.useCallback(() => {
-        setFormErrors({});
-        setTypeName(expenseType ? expenseType["name"] : "");
-        setCategory(expenseType ? expenseType["category"].toUpperCase() : "");
-        setRecurrent(expenseType ? expenseType["recurrent"] : false);
-        setBaseValue(expenseType ? expenseType["baseValue"] : 0.00);
-        setEndDate(expenseType && expenseType["endDate"] ? new Date(expenseType["endDate"]) : new Date());
-    }, [expenseType]);
-
-    React.useEffect(() => {
-        if (expenseType !== null) {
-            setTypeName(expenseType["name"]);
-            setCategory(expenseType["category"].toUpperCase());
-            setRecurrent(expenseType["recurrent"]);
-            setBaseValue(expenseType["baseValue"]);
-            setEndDate(expenseType["endDate"] ? new Date(expenseType["endDate"]) : new Date());
-        }
-        else {
-            clearFields();
-        }
-    }, [expenseType, clearFields]);
+    const handleRecurrentChange = (value, input) => {
+        input.onChange(value);
+        setRecurrent(value);
+    };
 
     const options = React.useMemo(() => [
         {
@@ -126,54 +123,78 @@ const ExpenseTypeModal = ({
         },
     ], []);
 
-    function mapOptionToString(option) {
-        return option.label;
-    };
+    const renderField = ({ input, label, type, meta: { touched, error } }) => (
+            <FormControl label={label} error={touched && error && error}>
+                <Input
+                  {...input}
+                  type={type}
+                  size={InputSize.compact}
+                />
+            </FormControl>
+        );
+            
+    const renderSelectField = ({ input, label, options, placeholder, disabled, meta: { touched, error } }) => (
+        <FormControl label={label} error={touched && error && error}>
+            <Select
+                options={options}
+                value={input.value}
+                size={InputSize.compact}
+                onChange={({ value }) => input.onChange(value)}
+                placeholder={!input.value ? placeholder : null}
+                labelKey="label"
+                valueKey="id"
+                disabled={disabled}
+            />
+        </FormControl>
+    );
 
-    const filteredOptions = React.useMemo(() => {
-        return options.filter((option) => {
-          const optionAsString = mapOptionToString(option);
-          return optionAsString
-            .toLowerCase()
-            .includes(category.toLowerCase());
-        });
-    }, [options, category]);
+    const renderCheckboxField = ({ input, label, meta: { touched, error } }) => (
+        <FormControl label={label} error={touched && error && error}>
+            <Checkbox
+                checked={input.value}
+                onChange={(value) => handleRecurrentChange(value, input)}
+                label={label}
+                size={InputSize.compact}
+                labelPlacement={LABEL_PLACEMENT.right}
+                {...checkboxItemOverrides}
+            />
+        </FormControl>
+    );
 
-    const handleClose = () => {
-        clearFields();
-        onClose();
-    };
+    const renderDateField = ({ input, label, type, meta: { touched, error } }) => (
+        <FormControl label={label} error={touched && error && error}>
+            <Datepicker
+                type={type}
+                size={InputSize.compact}
+                formatDisplay="DD/MM/YYYY"
+                clearable
+            />
+        </FormControl>
+    );
 
-    const validateAndSave = () => {
-        const requiredMessage = "This field is required"
-        let errors = {}
-
-        if (typeName === ""){
-            errors["name"] = requiredMessage;
+    React.useEffect(() => {
+        if (expenseType !== null) {
+            dispatch(change('expenseTypeForm', 'name', expenseType["name"]));
+            dispatch(change('expenseTypeForm', 'category', [options.find(o => o.id === expenseType["category"]) || options[0]]));
+            dispatch(change('expenseTypeForm', 'recurrent', expenseType["recurrent"]));
+            dispatch(change('expenseTypeForm', 'baseValue', expenseType["baseValue"]));
+            dispatch(change('expenseTypeForm', 'endDate', expenseType["endDate"] ? new Date(expenseType["endDate"]) : new Date()));
+            setRecurrent(expenseType["recurrent"]);
         }
-        if (category === "") {
-            errors["category"] = requiredMessage;
+        else {
+            dispatch(change('expenseTypeForm', 'name', ''));
+            dispatch(change('expenseTypeForm', 'category', []));
+            dispatch(change('expenseTypeForm', 'recurrent', false));
+            dispatch(change('expenseTypeForm', 'baseValue', 0.00));
+            dispatch(change('expenseTypeForm', 'endDate', new Date()));
         }
-        if (options.filter(o => o.label === category).length === 0) {
-            errors["category"] = "Invalid Category";
-        }
-        if (recurrent === true && baseValue <= 0) {
-            errors["baseValue"] = "Please specify a base value"
-        }
-        
-        if (Object.keys(errors).length > 0) {
-            setFormErrors(errors);
-            return;
-        }
-        
-        onSaveClick(typeName, category.toLowerCase(), recurrent, baseValue);
-        handleClose();
-
-    };
+    }, [expenseType, dispatch, options]);
 
     return (
+        <>
+        <ToasterContainer autoHideDuration={10000} overrides={toasterOverrides} />
         <Modal
-        onClose={handleClose}
+        onClose={onClose}
         closeable
         isOpen={isOpen}
         animate
@@ -182,94 +203,97 @@ const ExpenseTypeModal = ({
         role={ROLE.dialog}
         >
             <ModalHeader>{!!expenseType ? "Edit" : "Add"} Expense Type</ModalHeader>
-            <ModalBody>
+            <form onSubmit={handleSubmit(onSubmit)}>    
+                <ModalBody>
                 <FlexGrid flexGridColumnCount={2} flexGridColumnGap={"5px"} {...gridOverrides}>
                     <FlexGridItem>
-                        <FormControl 
+                        <Field
+                            name="name"
+                            type="text"
+                            component={renderField}
                             label="Expense Type Name *"
-                            error={"name" in formErrors ? formErrors["name"] : null}
-                        >
-                            <Input
-                            clearable
-                            value={typeName}
-                            onChange={e => setTypeName(e.target.value)}
-                            placeholder="Enter Name..."
-                            size={InputSize.compact}
                         />
-                    </FormControl>
-                </FlexGridItem>
-                <FlexGridItem>
-                    <FormControl 
-                        label="Category *"
-                        error={"category" in formErrors ? formErrors["category"] : null}
-                    >
-                            <Combobox
-                                value={category}
-                                onChange={e => setCategory(e.target.value)}
-                                placeholder="Select Category..."
-                                size={InputSize.compact}
-                                options={filteredOptions}
-                                mapOptionToString={mapOptionToString}
-                            />
-                        </FormControl>
+                    </FlexGridItem>
+                    <FlexGridItem>
+                        <Field
+                            name="category"
+                            type="select"
+                            component={renderSelectField}
+                            label="Category *"
+                            options={options}
+                            placeholder="Select Category..."
+                            disabled={false}
+                        />
                     </FlexGridItem>
                 </FlexGrid>
-                <FormControl 
-                    label="Recurrent"
-                    error={"recurrent" in formErrors ? formErrors["recurrent"] : null}
-                >
-                    <Checkbox
-                        checked={recurrent}
-                        onChange={(e) => setRecurrent(e.target.checked)}
-                        label="Recurrent"
-                        labelPlacement={LABEL_PLACEMENT.right}
-                        overrides={checkboxItemOverrides}
-                    />
-                </FormControl>
-                {recurrent && (
-                    <FlexGrid flexGridColumnCount={2} flexGridColumnGap={"5px"} {...gridOverrides}>
+                <FlexGrid flexGridColumnCount={3} flexGridColumnGap={"5px"} {...gridOverrides}>
+                    <FlexGridItem>
+                        <Field
+                            name="recurrent"
+                            type="checkbox"
+                            component={renderCheckboxField}
+                            label="Recurrent"
+                        />
+                    </FlexGridItem>
+                    {recurrent && (
+                        <>
                         <FlexGridItem>
-                            <FormControl 
-                                label="End Date *"
-                                error={"endDate" in formErrors ? formErrors["endDate"] : null}
-                            >
-                                <Datepicker
-                                    onChange={({date}) => setEndDate(date)}
-                                    placeholder="Select End Date..."
-                                    size={InputSize.compact}
-                                    formatString="dd/MM/yyyy"
-                                    clearable
-                                />
-                            </FormControl>
+                            <Field
+                                name="endDate"
+                                type="date"
+                                component={renderDateField}
+                                label="End Date"
+                            />
                         </FlexGridItem>
                         <FlexGridItem>
-                            <FormControl 
+                            <Field
+                                name="baseValue"
+                                type="number"
+                                component={renderField}
                                 label="Base Value *"
-                                error={"baseValue" in formErrors ? formErrors["baseValue"] : null}
-                            >
-                                <Input
-                                    startEnhancer="R$"
-                                    value={baseValue}
-                                    onChange={e => setBaseValue(e.target.value)}
-                                    placeholder="Enter Base Value..."
-                                    size={InputSize.compact}
-                                    type="number"
-                                />
-                            </FormControl>
+                            />
                         </FlexGridItem>
-                    </FlexGrid>
-                )}
+                        </>
+                    )}
+                </FlexGrid>
             </ModalBody>
             <ModalFooter>
-                <ModalButton kind={ButtonKind.tertiary} onClick={handleClose}>
+                <ModalButton kind={ButtonKind.tertiary} onClick={() => onClose()} type={'button'}>
                     Cancel
                 </ModalButton>
-                <ModalButton type={'submit'} onClick={() => validateAndSave()} isLoading={isLoading}>
+                <ModalButton type={'submit'} isLoading={isLoading}>
                     Save
                 </ModalButton>
             </ModalFooter>
+            </form>
         </Modal>
+        </>
     );
 }
 
-export default ExpenseTypeModal;
+const validate = (values) => {
+    const errors = {};
+    
+    if (!values.name) {
+        errors.name = 'Required';
+    }
+    
+    if (!values.category) {
+        errors.category = 'Required';
+    }
+    
+    if (values.recurrent && !values.baseValue) {
+        errors.baseValue = 'Required';
+    }
+    
+    return errors;
+};
+
+ExpenseTypeModal = reduxForm({
+    form: 'expenseTypeForm',
+    enableReinitialize: true,
+    touchOnBlur: false,
+    validate
+})(ExpenseTypeModal);
+
+export default connect()(ExpenseTypeModal);
