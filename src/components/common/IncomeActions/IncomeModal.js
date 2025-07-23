@@ -10,13 +10,12 @@ import {
   ROLE
 } from "baseui/modal";
 import { KIND as ButtonKind } from "baseui/button";
-import { Select } from "baseui/select";
-import { Input, SIZE as InputSize } from "baseui/input";
 import { FlexGrid, FlexGridItem } from "baseui/flex-grid";
-import { FormControl } from "baseui/form-control";
 import { change, reduxForm, Field } from 'redux-form';
 import { connect } from 'react-redux';
 import { toaster } from 'baseui/toast';
+
+import { renderField, renderSelectField } from '../formComponents';
 
 import { useIncomePost } from "../../../hooks/incomes/useIncomePost";
 import { useIncomePut } from "../../../hooks/incomes/useIncomePut";
@@ -90,31 +89,6 @@ let IncomeModal = ({
         }
     };
 
-    const renderField = ({ input, label, type, meta: { touched, error } }) => (
-            <FormControl label={label} error={touched && error && error}>
-                <Input
-                  {...input}
-                  type={type}
-                  size={InputSize.compact}
-                />
-            </FormControl>
-        );
-            
-    const renderSelectField = ({ input, label, options, placeholder, disabled, meta: { touched, error } }) => (
-        <FormControl label={label} error={touched && error && error}>
-            <Select
-                options={options}
-                value={input.value}
-                size={InputSize.compact}
-                onChange={({ value }) => onChangeOption(value, input)}
-                placeholder={!input.value ? placeholder : null}
-                labelKey="label"
-                valueKey="id"
-                disabled={disabled}
-            />
-        </FormControl>
-    );
-
     React.useEffect(() => {
         if (!!income) {
             dispatch(change('incomeForm', 'incomeType', [options.find(e => e.id === income['typeId'])]));
@@ -157,6 +131,7 @@ let IncomeModal = ({
                             label="Income Type"
                             placeholder="Select an income type"
                             disabled={!!income || !!incomeTypeInitial}
+                            handleOptionChange={onChangeOption}
                         />
                     </FlexGridItem>
                     <FlexGridItem>
@@ -179,6 +154,7 @@ let IncomeModal = ({
                             component={renderSelectField}
                             label="Month"
                             placeholder="Select a month"
+                            handleOptionChange={onChangeOption}
                         />
                     </FlexGridItem>
                     <FlexGridItem>

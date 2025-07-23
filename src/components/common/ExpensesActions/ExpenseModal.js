@@ -10,13 +10,12 @@ import {
   ROLE
 } from "baseui/modal";
 import { KIND as ButtonKind } from "baseui/button";
-import { Select } from "baseui/select";
-import { Input, SIZE as InputSize } from "baseui/input";
 import { FlexGrid, FlexGridItem } from "baseui/flex-grid";
-import { FormControl } from "baseui/form-control";
 import { toaster, ToasterContainer } from "baseui/toast";
 import { change, reduxForm, Field } from 'redux-form';
 import { connect } from 'react-redux';
+
+import { renderField, renderSelectField } from '../formComponents';
 
 import { useExpensePost } from "../../../hooks/expenses/useExpensePost"; 
 import { useExpensePut } from "../../../hooks/expenses/useExpensePut";
@@ -97,31 +96,6 @@ let ExpenseModal = ({
         label: month,
         id: index+1,
     }));
-
-    const renderField = ({ input, label, type, meta: { touched, error } }) => (
-          <FormControl label={label} error={touched && error && error}>
-            <Input
-              {...input}
-              type={type}
-              size={InputSize.compact}
-            />
-          </FormControl>
-        );
-        
-    const renderSelectField = ({ input, label, options, placeholder, disabled, meta: { touched, error } }) => (
-        <FormControl label={label} error={touched && error && error}>
-            <Select
-                options={options}
-                value={input.value}
-                size={InputSize.compact}
-                onChange={({ value }) => onChangeOption(value, input)}
-                placeholder={!input.value ? placeholder : null}
-                labelKey="label"
-                valueKey="id"
-                disabled={disabled}
-            />
-        </FormControl>
-    );
     
     React.useEffect(() => {
         dispatch(change('expenseForm', 'month', [monthOptions.find(m => m.id === parseInt(moment().format('MM')))]));
@@ -166,6 +140,7 @@ let ExpenseModal = ({
                                 label="Expense Type"
                                 placeholder="Select an expense type"
                                 disabled={!!expense || !!expenseTypeInitial}
+                                handleOptionChange={onChangeOption}
                             />
                         </FlexGridItem>
                         <FlexGridItem>
@@ -188,6 +163,7 @@ let ExpenseModal = ({
                                 label="Month"
                                 placeholder="Select month"
                                 disabled={false}
+                                handleOptionChange={onChangeOption}
                             />
                         </FlexGridItem>
                         <FlexGridItem>

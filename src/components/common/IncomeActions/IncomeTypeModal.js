@@ -9,16 +9,12 @@ import {
   ROLE
 } from "baseui/modal";
 import { KIND as ButtonKind } from "baseui/button";
-import {
-    Checkbox,
-    LABEL_PLACEMENT
-} from "baseui/checkbox";
-import { Input, SIZE as InputSize } from "baseui/input";
 import { FlexGrid, FlexGridItem } from "baseui/flex-grid";
-import { FormControl } from "baseui/form-control";
 import { change, reduxForm, Field } from 'redux-form';
 import { connect } from 'react-redux';
 import { toaster, ToasterContainer } from "baseui/toast";
+
+import { renderField, renderCheckboxField } from "../formComponents";
 
 import { useIncomeTypePost } from "../../../hooks/incomeTypes/useIncomeTypePost";
 import { useIncomeTypePut } from "../../../hooks/incomeTypes/useIncomeTypePut";
@@ -92,28 +88,6 @@ let IncomeTypeModal = ({
         setRecurrent(!recurrent);
     };
 
-    const renderField = ({ input, label, type, meta: { touched, error } }) => (
-        <FormControl label={label} error={touched && error && error}>
-            <Input
-              {...input}
-              type={type}
-              size={InputSize.compact}
-            />
-        </FormControl>
-    );
-
-    const renderCheckboxField = ({ input, label, meta: { touched, error } }) => (
-        <Checkbox
-            checked={input.value}
-            onChange={(value) => handleRecurrentChange(value, input)}
-            size={InputSize.compact}
-            labelPlacement={LABEL_PLACEMENT.left}
-            {...checkboxItemOverrides}
-        >
-            {label}
-        </Checkbox>
-    );
-
     React.useEffect(() => {
         if (!!incomeType) {
             dispatch(change('incomeTypeForm', 'name', incomeType["name"]));
@@ -154,6 +128,7 @@ let IncomeTypeModal = ({
                                 name="recurrent"
                                 component={renderCheckboxField}
                                 label="Recurrent"
+                                handleCheckboxChange={handleRecurrentChange}
                             />
                         </FlexGridItem>
                         {recurrent && 

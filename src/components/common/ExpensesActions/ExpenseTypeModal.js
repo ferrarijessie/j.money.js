@@ -9,18 +9,12 @@ import {
   ROLE
 } from "baseui/modal";
 import { KIND as ButtonKind } from "baseui/button";
-import {
-    Checkbox,
-    LABEL_PLACEMENT
-} from "baseui/checkbox";
-import { Select } from "baseui/select";
-import { Input, SIZE as InputSize } from "baseui/input";
 import { FlexGrid, FlexGridItem } from "baseui/flex-grid";
-import { FormControl } from "baseui/form-control";
-import { Datepicker } from "baseui/datepicker";
 import { change, reduxForm, Field } from 'redux-form';
 import { connect } from 'react-redux';
 import { toaster, ToasterContainer } from "baseui/toast";
+
+import { renderField, renderSelectField, renderCheckboxField, renderDateField } from "../formComponents";
 
 import { useExpenseTypesPost } from "../../../hooks/expenseTypes/useExpenseTypePost";
 import { useExpenseTypePut } from "../../../hooks/expenseTypes/useExpenseTypePut";
@@ -91,11 +85,6 @@ let ExpenseTypeModal = ({
         }   
     };
 
-    const handleRecurrentChange = (value, input) => {
-        input.onChange(value);
-        setRecurrent(value);
-    };
-
     const options = React.useMemo(() => [
         {
         label: "HOUSE",
@@ -123,54 +112,14 @@ let ExpenseTypeModal = ({
         },
     ], []);
 
-    const renderField = ({ input, label, type, meta: { touched, error } }) => (
-            <FormControl label={label} error={touched && error && error}>
-                <Input
-                  {...input}
-                  type={type}
-                  size={InputSize.compact}
-                />
-            </FormControl>
-        );
-            
-    const renderSelectField = ({ input, label, options, placeholder, disabled, meta: { touched, error } }) => (
-        <FormControl label={label} error={touched && error && error}>
-            <Select
-                options={options}
-                value={input.value}
-                size={InputSize.compact}
-                onChange={({ value }) => input.onChange(value)}
-                placeholder={!input.value ? placeholder : null}
-                labelKey="label"
-                valueKey="id"
-                disabled={disabled}
-            />
-        </FormControl>
-    );
+    const handleOptionChange = (value, input) => {
+        input.onChange(value);
+    };
 
-    const renderCheckboxField = ({ input, label, meta: { touched, error } }) => (
-        <FormControl label={label} error={touched && error && error}>
-            <Checkbox
-                checked={input.value}
-                onChange={(value) => handleRecurrentChange(value, input)}
-                label={label}
-                size={InputSize.compact}
-                labelPlacement={LABEL_PLACEMENT.right}
-                {...checkboxItemOverrides}
-            />
-        </FormControl>
-    );
-
-    const renderDateField = ({ input, label, type, meta: { touched, error } }) => (
-        <FormControl label={label} error={touched && error && error}>
-            <Datepicker
-                type={type}
-                size={InputSize.compact}
-                formatDisplay="DD/MM/YYYY"
-                clearable
-            />
-        </FormControl>
-    );
+    const handleCheckboxChange = (value, input) => {
+        input.onChange(value);
+        setRecurrent(!recurrent);
+    };
 
     React.useEffect(() => {
         if (expenseType !== null) {
@@ -223,16 +172,18 @@ let ExpenseTypeModal = ({
                             options={options}
                             placeholder="Select Category..."
                             disabled={false}
+                            handleOptionChange={handleOptionChange}
                         />
                     </FlexGridItem>
                 </FlexGrid>
                 <FlexGrid flexGridColumnCount={3} flexGridColumnGap={"5px"} {...gridOverrides}>
-                    <FlexGridItem>
+                    <FlexGridItem {...checkboxItemOverrides}>
                         <Field
                             name="recurrent"
                             type="checkbox"
                             component={renderCheckboxField}
                             label="Recurrent"
+                            handleCheckboxChange={handleCheckboxChange}
                         />
                     </FlexGridItem>
                     {recurrent && (
