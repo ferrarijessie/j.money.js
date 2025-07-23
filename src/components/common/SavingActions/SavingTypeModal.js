@@ -9,13 +9,12 @@ import {
   ROLE
 } from "baseui/modal";
 import { KIND as ButtonKind } from "baseui/button";
-import {
-    Checkbox,
-    LABEL_PLACEMENT
-} from "baseui/checkbox";
-import { Input, SIZE as InputSize } from "baseui/input";
 import { FlexGrid, FlexGridItem } from "baseui/flex-grid";
-import { FormControl } from "baseui/form-control";
+import { Field, change, reduxForm } from "redux-form";
+import { connect } from "react-redux";
+import { toaster, ToasterContainer } from "baseui/toast";
+
+import { renderField, renderCheckboxField } from "../formComponents";
 
 import { useSavingTypePost } from "../../../hooks/savingTypes/useSavingTypePost";
 import { useSavingTypePut } from "../../../hooks/savingTypes/useSavingTypePut";
@@ -32,88 +31,73 @@ const checkboxItemOverrides = {
     paddingTop: '17px',
 };
 
-const SavingTypeModal = ({
+const toasterOverrides = {
+    ToastBody: {
+        style: {
+            width: '500px'
+        }
+    }
+};
+
+let SavingTypeModal = ({
     isOpen,
     onClose,
     reload,
-    savingType = null
+    savingType = null,
+    dispatch,
+    handleSubmit,
 }) => {
     const [isLoading, setIsLoading] = React.useState(false);
-    const [typeName, setTypeName] = React.useState("");
-    const [active, setActive] = React.useState(false);
-    const [baseValue, setBaseValue] = React.useState(0.00);
-
-    const [formErrors, setFormErrors] = React.useState({});
 
     const { mutateAsync: addSavingTypeRequest } = useSavingTypePost();
     const { mutateAsync: editSavingTypeRequest } = useSavingTypePut();
 
-    const onSaveClick = async (typeName, active, baseValue = 0) => {
+    const onSubmit = async (values) => {
         setIsLoading(true);
 
         const payload = {
-            'name': typeName,
-            'active': active,
-            'baseValue': baseValue
+            'name': values.name,
+            'active': values.active,
+            'baseValue': values.baseValue
         }
 
-        if (savingType !== null) {
-            await editSavingTypeRequest({
-                id: savingType["id"], 
-                payload: payload
-            });
+        try {
+            if (savingType !== null) {
+                await editSavingTypeRequest({
+                    id: savingType["id"], 
+                    payload: payload
+                });
+            }
+            else {
+                await addSavingTypeRequest(payload);
+            }
+            await reload();
+            setIsLoading(false);
+            toaster.positive("Saving type saved successfully");
+            onClose();
+        } catch (error) {
+            toaster.negative(`${error}`);
+            setIsLoading(false);
         }
-        else {
-            await addSavingTypeRequest(payload);
-        }
-        await reload();
-        setIsLoading(false);
     };
 
-    const clearFields = () => {
-        setFormErrors({});
-        setTypeName(!!savingType ? savingType["name"] : "");
-        setActive(!!savingType ? savingType["active"] : false);
-        setBaseValue(!!savingType ? savingType["baseValue"] : 0.00);
+    const handleActiveChange = (value, input) => {
+        input.onChange(value);
     };
 
     React.useEffect(() => {
         if (savingType !== null) {
-            setTypeName(savingType["name"]);
-            setActive(savingType["active"]);
-            setBaseValue(savingType["baseValue"]);
+            dispatch(change('savingTypeForm', 'name', savingType["name"]));
+            dispatch(change('savingTypeForm', 'active', savingType["active"]));
+            dispatch(change('savingTypeForm', 'baseValue', savingType["baseValue"]));
         }
-        else {
-            clearFields();
-        }
-    }, [savingType]);
-
-    const handleClose = () => {
-        clearFields();
-        onClose();
-    };
-
-    const validateAndSave = () => {
-        const requiredMessage = "This field is required"
-        let errors = {}
-
-        if (typeName === ""){
-            errors["name"] = requiredMessage;
-        }
-        
-        if (Object.keys(errors).length > 0) {
-            setFormErrors(errors);
-            return;
-        }
-        
-        onSaveClick(typeName, active, baseValue);
-        handleClose();
-
-    };
+    }, [savingType, dispatch]);
 
     return (
+        <>
+        <ToasterContainer autoHideDuration={10000} overrides={toasterOverrides} />
         <Modal
-        onClose={handleClose}
+        onClose={onClose}
         closeable
         isOpen={isOpen}
         animate
@@ -122,56 +106,61 @@ const SavingTypeModal = ({
         role={ROLE.dialog}
         >
             <ModalHeader>{!!savingType ? "Edit" : "Add"} Saving Type</ModalHeader>
-            <ModalBody>
-                <FlexGrid flexGridColumnCount={2} flexGridColumnGap={"5px"} {...gridOverrides}>
-                    <FlexGridItem>
-                        <FormControl 
-                            label="Saving Type Name *"
-                            error={"name" in formErrors ? formErrors["name"] : null}
-                        >
-                            <Input
-                                clearable
-                                value={typeName}
-                                onChange={e => setTypeName(e.target.value)}
-                                placeholder="Enter Name..."
-                                size={InputSize.compact}
+            <form onSubmit={handleSubmit(onSubmit)}>
+                <ModalBody>
+                    <FlexGrid flexGridColumnCount={2} flexGridColumnGap={"5px"} {...gridOverrides}>
+                        <FlexGridItem>
+                            <Field 
+                                name="name"
+                                type="text"
+                                component={renderField}
+                                label="Saving Type Name *"
                             />
-                        </FormControl>
-                    </FlexGridItem>
-                    <FlexGridItem {...checkboxItemOverrides}>
-                        <Checkbox
-                            checked={active}
-                            onChange={e => setActive(e.target.checked)}
-                            labelPlacement={LABEL_PLACEMENT.right}
-                            >
-                            Active
-                        </Checkbox>
-                    </FlexGridItem>
-                </FlexGrid>
-                <FormControl 
-                    label="Base Value *"
-                    error={"baseValue" in formErrors ? formErrors["baseValue"] : null}
-                >
-                    <Input
-                        startEnhancer="R$"
-                        value={baseValue}
-                        onChange={e => setBaseValue(e.target.value)}
-                        placeholder="Enter Base Value..."
-                        size={InputSize.compact}
-                        type="number"
+                        </FlexGridItem>
+                        <FlexGridItem {...checkboxItemOverrides}>
+                            <Field 
+                                name="active"
+                                component={renderCheckboxField}
+                                label="Active"
+                                handleCheckboxChange={handleActiveChange}
+                            />
+                        </FlexGridItem>
+                    </FlexGrid>
+                    <Field 
+                        name="baseValue"
+                        component={renderField}
+                        label="Base Value *"
                     />
-                </FormControl>
-            </ModalBody>
-            <ModalFooter>
-                <ModalButton kind={ButtonKind.tertiary} onClick={handleClose}>
-                    Cancel
-                </ModalButton>
-                <ModalButton type={'submit'} onClick={() => validateAndSave()} isLoading={isLoading}>
-                    Save
-                </ModalButton>
-            </ModalFooter>
+                </ModalBody>
+                <ModalFooter>
+                    <ModalButton kind={ButtonKind.tertiary} onClick={onClose} type={'button'}>
+                        Cancel
+                    </ModalButton>
+                    <ModalButton type={'submit'} isLoading={isLoading}>
+                        Save
+                    </ModalButton>
+                </ModalFooter>
+            </form>
         </Modal>
+        </>
     );
 }
 
-export default SavingTypeModal;
+const validate = (values) => {
+    const errors = {};
+    
+    if (!values.name) {
+        errors.name = 'Required';
+    }
+    
+    return errors;
+};
+
+SavingTypeModal = reduxForm({
+    form: 'savingTypeForm',
+    enableReinitialize: true,
+    touchOnBlur: false,
+    validate
+})(SavingTypeModal);
+
+export default connect()(SavingTypeModal);
