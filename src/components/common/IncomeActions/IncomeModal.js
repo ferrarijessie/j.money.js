@@ -14,6 +14,9 @@ import { Select } from "baseui/select";
 import { Input, SIZE as InputSize } from "baseui/input";
 import { FlexGrid, FlexGridItem } from "baseui/flex-grid";
 import { FormControl } from "baseui/form-control";
+import { change, reduxForm, Field } from 'redux-form';
+import { connect } from 'react-redux';
+import { toaster } from 'baseui/toast';
 
 import { useIncomePost } from "../../../hooks/incomes/useIncomePost";
 import { useIncomePut } from "../../../hooks/incomes/useIncomePut";
@@ -23,58 +26,49 @@ const gridOverrides = {
     marginTop: '15px'
 };
 
-const IncomeModal = ({
+let IncomeModal = ({
     isOpen,
     onClose,
     reload,
     incomeTypes = [],
     incomeTypeInitial = null,
-    income = null
+    income = null,
+    dispatch,
+    handleSubmit
 }) => {
     
     const [isLoading, setIsLoading] = React.useState(false);
-    const [incomeType, setIncomeType] = React.useState("");
-    const [incomeTypeId, setIncomeTypeId] = React.useState(!!incomeTypeInitial ? incomeTypeInitial.incomeTypeId : 0);
-    const [value, setValue] = React.useState(!!incomeTypeInitial ? incomeTypeInitial.baseValue.toFixed(2) : 0.00);
-    const [month, setMonth] = React.useState(moment().format('MM'));
-    const [year, setYear] = React.useState(moment().format('YYYY'));
-
-    const [formErrors, setFormErrors] = React.useState({});
 
     const { mutateAsync: addIncomeRequest } = useIncomePost();
     const { mutateAsync: editIncomeResquest } = useIncomePut();
 
-    const onSaveClick = async (typeId, value, month, year) => {
+    const onSubmit = async (values) => {
         setIsLoading(true);
 
         const payload = {
-            'year': year,
-            'month': month,
-            'typeId': typeId,
-            'value': value
+            'year': values.year,
+            'month': values.month[0].id,
+            'typeId': values.incomeType[0].id,
+            'value': values.value
         };
 
-        if (!!income) {
-            await editIncomeResquest({
-                id: income["id"], 
-                payload: payload})
+        try {
+            if (!!income) {
+                await editIncomeResquest({
+                    id: income["id"], 
+                    payload: payload})
+            }
+            else {
+                await addIncomeRequest(payload);
+            }
+            await reload();
+            setIsLoading(false);
+            toaster.positive("Income saved successfully");
+            onClose();
+        } catch (error) {
+            toaster.negative(`${error}`);
+            setIsLoading(false);
         }
-        else {
-            await addIncomeRequest(payload);
-        }
-
-        await reload();
-        setIsLoading(false);
-        handleClose();
-    };
-
-    const clearFields = () => {
-        setFormErrors({});
-        setIncomeType("");
-        setIncomeTypeId(!!incomeTypeInitial ? incomeTypeInitial.incomeTypeId : 0)
-        setValue(!!incomeTypeInitial ? incomeTypeInitial.baseValue.toFixed(2) : 0.00);
-        setMonth(moment().format('MM'));
-        setYear(moment().format('YYYY'));
     };
 
     const options = incomeTypes?.map(iType => ({
@@ -83,58 +77,66 @@ const IncomeModal = ({
         baseValue: iType['baseValue']
     }));
 
-    const handleClose = () => {
-        clearFields();
-        onClose();
+    const months = moment.months();
+    const monthOptions = months.map((month, index) => ({
+        label: month,
+        id: index+1,
+    }));
+
+    const onChangeOption = (value, input) => {
+        input.onChange(value);
+        if (value[0].baseValue) {
+            dispatch(change('incomeForm', 'value', value[0].baseValue.toFixed(2)));
+        }
     };
 
-    const validateAndSave = () => {
-        const requiredMessage = "This field is required"
-        let errors = {}
-
-        if (!incomeTypeInitial && incomeType === ""){
-            errors["type"] = requiredMessage;
-        }
-        if (value <= 0) {
-            errors["value"] = "Please specify a base value"
-        }
-        if (month <= 0){
-            errors["month"] = requiredMessage;
-        }
-        if (year <= 0){
-            errors["year"] = requiredMessage;
-        }
-        
-        if (Object.keys(errors).length > 0) {
-            setFormErrors(errors);
-            return;
-        }
-        onSaveClick(incomeTypeId, value, month, year);
-        handleClose();
-    };
-
-    const handleOptionchange = (option) => {
-        setIncomeType(option);
-        setIncomeTypeId(option['0']['id']);
-        setValue(option[0]['baseValue'].toFixed(2));
-    };
+    const renderField = ({ input, label, type, meta: { touched, error } }) => (
+            <FormControl label={label} error={touched && error && error}>
+                <Input
+                  {...input}
+                  type={type}
+                  size={InputSize.compact}
+                />
+            </FormControl>
+        );
+            
+    const renderSelectField = ({ input, label, options, placeholder, disabled, meta: { touched, error } }) => (
+        <FormControl label={label} error={touched && error && error}>
+            <Select
+                options={options}
+                value={input.value}
+                size={InputSize.compact}
+                onChange={({ value }) => onChangeOption(value, input)}
+                placeholder={!input.value ? placeholder : null}
+                labelKey="label"
+                valueKey="id"
+                disabled={disabled}
+            />
+        </FormControl>
+    );
 
     React.useEffect(() => {
-        if (income !== null) {
-            setIncomeType(income.typeName);
-            setIncomeTypeId(income.typeId)
-            setValue(income.value.toFixed(2));
-            setMonth(income.month);
-            setYear(income.year);
+        if (!!income) {
+            dispatch(change('incomeForm', 'incomeType', [options.find(e => e.id === income['typeId'])]));
+            dispatch(change('incomeForm', 'value', income['value'].toFixed(2)));
+            dispatch(change('incomeForm', 'month', [monthOptions.find(m => m.id === income['month'])]));
+            dispatch(change('incomeForm', 'year', income['year']));
+        }
+        if (!!incomeTypeInitial) {
+            dispatch(change('incomeForm', 'incomeType', [options.find(e => e.id === incomeTypeInitial.incomeTypeId)]));
+            dispatch(change('incomeForm', 'value', incomeTypeInitial.baseValue.toFixed(2)));
+            dispatch(change('incomeForm', 'month', [monthOptions.find(m => m.id === parseInt(moment().format('MM')))]));
+            dispatch(change('incomeForm', 'year', moment().format('YYYY')));
         }
         else {
-            clearFields();
+            dispatch(change('incomeForm', 'month', [monthOptions.find(m => m.id === parseInt(moment().format('MM')))]));
+            dispatch(change('incomeForm', 'year', moment().format('YYYY')));
         }
-    }, [income]);
+    }, [income, incomeTypeInitial, options, monthOptions, dispatch]);
 
     return (
         <Modal
-            onClose={handleClose}
+            onClose={onClose}
             closeable
             isOpen={isOpen}
             animate
@@ -143,89 +145,91 @@ const IncomeModal = ({
             role={ROLE.dialog}
         >
             <ModalHeader>{income ? 'Edit' : 'Add'} Income</ModalHeader>
+            <form onSubmit={handleSubmit(onSubmit)}>
             <ModalBody>
                 <FlexGrid flexGridColumnCount={2} flexGridColumnGap={"5px"} {...gridOverrides}>
                     <FlexGridItem>
-                    <FormControl 
-                        label="Income Type *"
-                        error={"type" in formErrors ? formErrors["type"] : null}
-                    >
-                        {!!incomeTypeInitial || !!income ? 
-                            <Input 
-                                value={!!incomeTypeInitial ? incomeTypeInitial.name : income.typeName}
-                                disabled
-                                size={InputSize.compact}
-                            />
-                        :
-                            <Select
-                                value={incomeType}
-                                onChange={({ value }) => handleOptionchange(value)}
-                                options={options}
-                                size={InputSize.compact}
-                                labelKey="label"
-                                valueKey="id"
-                            />
-                        }
-                    </FormControl>
+                        <Field
+                            name="incomeType"
+                            type="select"
+                            options={options}
+                            component={renderSelectField}
+                            label="Income Type"
+                            placeholder="Select an income type"
+                            disabled={!!income || !!incomeTypeInitial}
+                        />
                     </FlexGridItem>
                     <FlexGridItem>
-                        <FormControl 
+                        <Field
+                            name="value"
+                            type="number"
+                            component={renderField}
                             label="Value *"
-                            error={"value" in formErrors ? formErrors["value"] : null}
-                        >
-                            <Input
-                                startEnhancer="R$"
-                                value={value}
-                                onChange={e => setValue(e.target.value)}
-                                placeholder="Value..."
-                                size={InputSize.compact}
-                                type="number"
-                            />
-                        </FormControl>
+                            placeholder="Value..."
+                        />
                     </FlexGridItem>
                 </FlexGrid>
 
                 <FlexGrid flexGridColumnCount={2} flexGridColumnGap={"5px"} {...gridOverrides}>
                     <FlexGridItem>
-                        <FormControl 
+                        <Field
+                            name="month"
+                            type="select"
+                            options={monthOptions}
+                            component={renderSelectField}
                             label="Month"
-                            error={"month" in formErrors ? formErrors["month"] : null}
-                        >
-                            <Input 
-                                value={month}
-                                onChange={e => setMonth(e.target.value)}
-                                placeholder="Specify Month..."
-                                size={InputSize.compact}
-                                type="number"
-                            />
-                        </FormControl>
+                            placeholder="Select a month"
+                        />
                     </FlexGridItem>
                     <FlexGridItem>
-                        <FormControl 
+                        <Field
+                            name="year"
+                            type="number"
+                            component={renderField}
                             label="Year"
-                            error={"year" in formErrors ? formErrors["year"] : null}
-                        >
-                            <Input 
-                                value={year}
-                                onChange={e => setYear(e.target.value)}
-                                placeholder="Specify Year..."
-                                size={InputSize.compact}
-                                type="number"
-                            />
-                        </FormControl>
+                            placeholder="Year..."
+                        />
                     </FlexGridItem>
                 </FlexGrid>
             </ModalBody>
             <ModalFooter>
-                <ModalButton kind={ButtonKind.tertiary} onClick={handleClose}>
+                <ModalButton kind={ButtonKind.tertiary} onClick={onClose} type={'button'}>
                     Cancel
                 </ModalButton>
-                <ModalButton type={'submit'} onClick={() => validateAndSave()} isLoading={isLoading}>
+                <ModalButton type={'submit'} isLoading={isLoading}>
                     Save
                 </ModalButton>
             </ModalFooter>
+            </form>
         </Modal>
     );
 }
 
-export default IncomeModal;
+const validate = (values) => {
+    const errors = {};
+
+    if (!values.incomeType) {
+        errors.incomeType = 'Income type is required';
+    }
+    
+    if (!values.value) {
+        errors.value = 'Value is required';
+    }
+    
+    if (!values.month) {
+        errors.month = 'Month is required';
+    }
+    
+    if (!values.year) {
+        errors.year = 'Year is required';
+    }
+    
+    return errors;
+};
+
+IncomeModal = reduxForm({
+    form: 'incomeForm',
+    validate
+})(IncomeModal);
+
+export default connect()(IncomeModal);

@@ -65,7 +65,7 @@ const IncomeTypeDetails = () => {
     const onConfirmDelete = async () => {
         setIsSaveLoading(true);
 
-        await deleteIncomeRequest(selectedIncome["incomeId"]);
+        await deleteIncomeRequest(selectedIncome["id"]);
         await reload();
         onCloseModal();
 
@@ -161,7 +161,7 @@ const IncomeTypeDetails = () => {
                 isOpen={isIncomeModalOpen}
                 onClose={onCloseModal}
                 reload={reload}
-                incomeTypes={null}
+                incomeTypes={[incomeTypeData]}
                 incomeTypeInitial={incomeTypeData} 
                 income={selectedIncome}
             />
