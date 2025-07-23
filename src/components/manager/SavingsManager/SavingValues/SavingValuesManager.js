@@ -60,6 +60,7 @@ const SavingValuesManager = () => {
         setIsSaveLoading(true);
 
         await deleteSavingRequest(selectedSaving["id"]);
+        setSelectedSaving(null);
         await reload();
         onCloseModal();
 

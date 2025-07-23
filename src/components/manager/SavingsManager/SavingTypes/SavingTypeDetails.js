@@ -66,13 +66,14 @@ const SavingTypeDetails = () => {
         setIsSaveLoading(true);
 
         await deleteSavingRequest(selectedSaving["id"]);
+        setSelectedSaving(null);
         await reload();
         onCloseModal();
 
         setIsSaveLoading(false);
     };
 
-    if (isLoading) {
+    if (!!isLoading || !!isSaveLoading) {
         return (
             <ManagerSubPage 
                 activeItem={SAVING_TYPES_MANGER_PATH} 
@@ -161,7 +162,7 @@ const SavingTypeDetails = () => {
                 isOpen={isSavingModalOpen}
                 onClose={onCloseModal}
                 reload={reload}
-                savingTypes={null}
+                savingTypes={[savingTypeData]}
                 savingTypeInitial={savingTypeData} 
                 saving={selectedSaving}
             />

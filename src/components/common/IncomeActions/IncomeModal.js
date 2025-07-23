@@ -13,7 +13,7 @@ import { KIND as ButtonKind } from "baseui/button";
 import { FlexGrid, FlexGridItem } from "baseui/flex-grid";
 import { change, reduxForm, Field } from 'redux-form';
 import { connect } from 'react-redux';
-import { toaster } from 'baseui/toast';
+import { toaster, ToasterContainer } from 'baseui/toast';
 
 import { renderField, renderSelectField } from '../formComponents';
 
@@ -23,6 +23,14 @@ import { useIncomePut } from "../../../hooks/incomes/useIncomePut";
 
 const gridOverrides = {
     marginTop: '15px'
+};
+
+const toasterOverrides = {
+    ToastBody: {
+        style: {
+            width: '500px'
+        }
+    }
 };
 
 let IncomeModal = ({
@@ -109,6 +117,8 @@ let IncomeModal = ({
     }, [income, incomeTypeInitial, options, monthOptions, dispatch]);
 
     return (
+        <>
+        <ToasterContainer autoHideDuration={10000} overrides={toasterOverrides} />
         <Modal
             onClose={onClose}
             closeable
@@ -120,64 +130,65 @@ let IncomeModal = ({
         >
             <ModalHeader>{income ? 'Edit' : 'Add'} Income</ModalHeader>
             <form onSubmit={handleSubmit(onSubmit)}>
-            <ModalBody>
-                <FlexGrid flexGridColumnCount={2} flexGridColumnGap={"5px"} {...gridOverrides}>
-                    <FlexGridItem>
-                        <Field
-                            name="incomeType"
-                            type="select"
-                            options={options}
-                            component={renderSelectField}
-                            label="Income Type"
-                            placeholder="Select an income type"
-                            disabled={!!income || !!incomeTypeInitial}
-                            handleOptionChange={onChangeOption}
-                        />
-                    </FlexGridItem>
-                    <FlexGridItem>
-                        <Field
-                            name="value"
-                            type="number"
-                            component={renderField}
-                            label="Value *"
-                            placeholder="Value..."
-                        />
-                    </FlexGridItem>
-                </FlexGrid>
+                <ModalBody>
+                    <FlexGrid flexGridColumnCount={2} flexGridColumnGap={"5px"} {...gridOverrides}>
+                        <FlexGridItem>
+                            <Field
+                                name="incomeType"
+                                type="select"
+                                options={options}
+                                component={renderSelectField}
+                                label="Income Type"
+                                placeholder="Select an income type"
+                                disabled={!!income || !!incomeTypeInitial}
+                                handleOptionChange={onChangeOption}
+                            />
+                        </FlexGridItem>
+                        <FlexGridItem>
+                            <Field
+                                name="value"
+                                type="number"
+                                component={renderField}
+                                label="Value *"
+                                placeholder="Value..."
+                            />
+                        </FlexGridItem>
+                    </FlexGrid>
 
-                <FlexGrid flexGridColumnCount={2} flexGridColumnGap={"5px"} {...gridOverrides}>
-                    <FlexGridItem>
-                        <Field
-                            name="month"
-                            type="select"
-                            options={monthOptions}
-                            component={renderSelectField}
-                            label="Month"
-                            placeholder="Select a month"
-                            handleOptionChange={onChangeOption}
-                        />
-                    </FlexGridItem>
-                    <FlexGridItem>
-                        <Field
-                            name="year"
-                            type="number"
-                            component={renderField}
-                            label="Year"
-                            placeholder="Year..."
-                        />
-                    </FlexGridItem>
-                </FlexGrid>
-            </ModalBody>
-            <ModalFooter>
-                <ModalButton kind={ButtonKind.tertiary} onClick={onClose} type={'button'}>
-                    Cancel
-                </ModalButton>
-                <ModalButton type={'submit'} isLoading={isLoading}>
-                    Save
-                </ModalButton>
-            </ModalFooter>
+                    <FlexGrid flexGridColumnCount={2} flexGridColumnGap={"5px"} {...gridOverrides}>
+                        <FlexGridItem>
+                            <Field
+                                name="month"
+                                type="select"
+                                options={monthOptions}
+                                component={renderSelectField}
+                                label="Month"
+                                placeholder="Select a month"
+                                handleOptionChange={onChangeOption}
+                            />
+                        </FlexGridItem>
+                        <FlexGridItem>
+                            <Field
+                                name="year"
+                                type="number"
+                                component={renderField}
+                                label="Year"
+                                placeholder="Year..."
+                            />
+                        </FlexGridItem>
+                    </FlexGrid>
+                </ModalBody>
+                <ModalFooter>
+                    <ModalButton kind={ButtonKind.tertiary} onClick={onClose} type={'button'}>
+                        Cancel
+                    </ModalButton>
+                    <ModalButton type={'submit'} isLoading={isLoading}>
+                        Save
+                    </ModalButton>
+                </ModalFooter>
             </form>
         </Modal>
+        </>
     );
 }
 
