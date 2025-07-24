@@ -16,22 +16,11 @@ import { change, reduxForm, Field } from 'redux-form';
 import { connect } from 'react-redux';
 
 import { renderField, renderSelectField } from '../formComponents';
+import { gridOverrides, toasterOverrides } from '../styles/globalStyles';
 
 import { useExpensePost } from "../../../hooks/expenses/useExpensePost"; 
 import { useExpensePut } from "../../../hooks/expenses/useExpensePut";
 
-
-const gridOverrides = {
-    marginTop: '15px'
-};
-
-const toasterOverrides = {
-    ToastBody: {
-        style: {
-            width: '500px'
-        }
-    }
-};
 
 let ExpenseModal = ({
     isOpen,

@@ -2,5 +2,24 @@ import { styled } from 'styletron-react';
 
 export const ContentWrapper = styled('div', {
     minHeight: '100vh',
-    paddingBottom: '60px', // Add enough padding to accommodate the footer height
+    paddingBottom: '60px',
 });
+
+export const gridOverrides = {
+    marginTop: '15px'
+};
+
+export const toasterOverrides = {
+    ToastBody: {
+        style: {
+            width: '500px'
+        }
+    }
+};
+
+export const checkboxItemOverrides = {
+    display: 'flex',
+    alignSelf: 'center',
+    justifyContent: 'flex-start',
+    paddingTop: '17px',
+};

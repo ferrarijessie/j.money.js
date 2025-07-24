@@ -16,22 +16,10 @@ import { reduxForm, Field, change } from "redux-form";
 import { connect } from "react-redux";
 
 import { renderField, renderSelectField } from '../formComponents';
+import { gridOverrides, toasterOverrides } from '../styles/globalStyles';
 
 import { useSavingPost } from "../../../hooks/savings/useSavingPost";
 import { useSavingPut } from "../../../hooks/savings/useSavingPut";
-
-
-const gridOverrides = {
-    marginTop: '15px'
-};
-
-const toasterOverrides = {
-    ToastBody: {
-        style: {
-            width: '500px'
-        }
-    }
-};
 
 let SavingValueModal = ({
     isOpen,

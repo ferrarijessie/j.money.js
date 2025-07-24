@@ -15,29 +15,11 @@ import { connect } from 'react-redux';
 import { toaster, ToasterContainer } from "baseui/toast";
 
 import { renderField, renderSelectField, renderCheckboxField, renderDateField } from "../formComponents";
+import { gridOverrides, toasterOverrides, checkboxItemOverrides } from '../styles/globalStyles';
 
 import { useExpenseTypesPost } from "../../../hooks/expenseTypes/useExpenseTypePost";
 import { useExpenseTypePut } from "../../../hooks/expenseTypes/useExpenseTypePut";
 
-
-const gridOverrides = {
-    marginTop: '15px'
-}
-
-const checkboxItemOverrides = {
-    display: 'flex',
-    alignSelf: 'center',
-    justifyContent: 'center',
-    paddingTop: '17px',
-};
-
-const toasterOverrides = {
-    ToastBody: {
-        style: {
-            width: '500px'
-        }
-    }
-};
 
 let ExpenseTypeModal = ({
     isOpen,

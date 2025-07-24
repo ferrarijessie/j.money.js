@@ -16,22 +16,13 @@ import { connect } from 'react-redux';
 import { toaster, ToasterContainer } from 'baseui/toast';
 
 import { renderField, renderSelectField } from '../formComponents';
+import { gridOverrides, toasterOverrides } from '../styles/globalStyles';
 
 import { useIncomePost } from "../../../hooks/incomes/useIncomePost";
 import { useIncomePut } from "../../../hooks/incomes/useIncomePut";
 
 
-const gridOverrides = {
-    marginTop: '15px'
-};
 
-const toasterOverrides = {
-    ToastBody: {
-        style: {
-            width: '500px'
-        }
-    }
-};
 
 let IncomeModal = ({
     isOpen,

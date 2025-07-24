@@ -15,29 +15,11 @@ import { connect } from 'react-redux';
 import { toaster, ToasterContainer } from "baseui/toast";
 
 import { renderField, renderCheckboxField } from "../formComponents";
+import { gridOverrides, toasterOverrides, checkboxItemOverrides } from '../styles/globalStyles';
 
 import { useIncomeTypePost } from "../../../hooks/incomeTypes/useIncomeTypePost";
 import { useIncomeTypePut } from "../../../hooks/incomeTypes/useIncomeTypePut";
 
-
-const gridOverrides = {
-    marginTop: '15px'
-}
-
-const checkboxItemOverrides = {
-    display: 'flex',
-    alignSelf: 'center',
-    justifyContent: 'flex-start',
-    paddingTop: '17px',
-};
-
-const toasterOverrides = {
-    ToastBody: {
-        style: {
-            width: '500px'
-        }
-    }
-};
 
 let IncomeTypeModal = ({
     isOpen,
