@@ -71,7 +71,7 @@ let IncomeModal = ({
 
     const options = incomeTypes?.map(iType => ({
         label: iType['name'],
-        id: iType['incomeTypeId'],
+        id: iType['id'],
         baseValue: iType['baseValue']
     }));
 
@@ -96,7 +96,7 @@ let IncomeModal = ({
             dispatch(change('incomeForm', 'year', income['year']));
         }
         if (!!incomeTypeInitial) {
-            dispatch(change('incomeForm', 'incomeType', [options.find(e => e.id === incomeTypeInitial.incomeTypeId)]));
+            dispatch(change('incomeForm', 'incomeType', [options.find(e => e.id === incomeTypeInitial.id)]));
             dispatch(change('incomeForm', 'value', incomeTypeInitial.baseValue.toFixed(2)));
             dispatch(change('incomeForm', 'month', [monthOptions.find(m => m.id === parseInt(moment().format('MM')))]));
             dispatch(change('incomeForm', 'year', moment().format('YYYY')));

@@ -105,7 +105,7 @@ const ExpenseTypeDetails = () => {
         <>
             <ManagerSubPage 
                 activeItem={EXPENSE_TYPES_MANAGER_PATH} 
-                itemTitle={`#${expenseTypeData.expenseTypeId} ${expenseTypeData.name}`}
+                itemTitle={`#${expenseTypeData.id} ${expenseTypeData.name}`}
                 actions={
                     <>
                         <Button 

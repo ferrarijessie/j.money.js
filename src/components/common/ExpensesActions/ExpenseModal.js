@@ -76,7 +76,7 @@ let ExpenseModal = ({
     
     const options = expenseTypes?.map(eType => ({
         label: eType['name'],
-        id: eType['expenseTypeId'],
+        id: eType['id'],
         baseValue: eType['baseValue']
     }));
 
@@ -87,19 +87,21 @@ let ExpenseModal = ({
     }));
     
     React.useEffect(() => {
-        dispatch(change('expenseForm', 'month', [monthOptions.find(m => m.id === parseInt(moment().format('MM')))]));
-        dispatch(change('expenseForm', 'year', moment().format('YYYY')));
-
         if (!!expenseTypeInitial) {
-            dispatch(change('expenseForm', 'expenseType', [options.find(e => e.id === expenseTypeInitial.expenseTypeId)]));
+            dispatch(change('expenseForm', 'expenseType', [options.find(e => e.id === expenseTypeInitial.id)]));
             dispatch(change('expenseForm', 'value', expenseTypeInitial.baseValue.toFixed(2)));
         }
 
-        if (!!expense) {
+        else if (!!expense) {
+            console.log(options);
             dispatch(change('expenseForm', 'expenseType', [options.find(e => e.id === expense['typeId'])]));
             dispatch(change('expenseForm', 'value', expense['value'].toFixed(2)));
             dispatch(change('expenseForm', 'month', [monthOptions.find(m => m.id === expense['month'])]));
             dispatch(change('expenseForm', 'year', expense['year']));
+        }
+        else {
+            dispatch(change('expenseForm', 'month', [monthOptions.find(m => m.id === parseInt(moment().format('MM')))]));
+            dispatch(change('expenseForm', 'year', moment().format('YYYY')));
         }
     }, [dispatch, monthOptions, expenseTypeInitial, options, expense]);
 

@@ -51,7 +51,7 @@ const IncomeTypesManager = () => {
     };
 
     const onConfirmDelete = async () => {
-        await deleteIncomeTypeRequest(selectedIncomeType["incomeTypeId"]);
+        await deleteIncomeTypeRequest(selectedIncomeType["id"]);
         await reload();
         onCloseModal();
     };
@@ -106,7 +106,7 @@ const IncomeTypesManager = () => {
                     onClose={onCloseModal}
                     onConfirmClick={onConfirmDelete}
                     title="Delete Income Type"
-                    content={`Are you sure you want to delete Income Type #${selectedIncomeType["incomeTypeId"]} - ${selectedIncomeType["name"]} and all the incomes attached to it?`}
+                    content={`Are you sure you want to delete Income Type #${selectedIncomeType["id"]} - ${selectedIncomeType["name"]} and all the incomes attached to it?`}
                 />
             }
         </>

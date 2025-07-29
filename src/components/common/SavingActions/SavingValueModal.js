@@ -82,8 +82,7 @@ let SavingValueModal = ({
     const onChangeOption = (value, input) => {
         input.onChange(value);
         if (value[0].baseValue) {
-            console.log(value[0].baseValue.toFixed(2));
-            dispatch(change('savingValueForm', 'value', value[0].baseValue));
+            dispatch(change('savingValueForm', 'value', value[0].baseValue.toFixed(2)));
         }
     };
 
@@ -95,10 +94,10 @@ let SavingValueModal = ({
             dispatch(change('savingValueForm', 'year', moment().format('YYYY')));
         }
         else if (!!saving) {
-            dispatch(change('savingValueForm', 'savingType', [options.find(option => option.id === saving.typeId)]));
-            dispatch(change('savingValueForm', 'value', saving.value.toFixed(2)));
-            dispatch(change('savingValueForm', 'month', [monthOptions.find(month => month.id === parseInt(saving.month))]));
-            dispatch(change('savingValueForm', 'year', parseInt(saving.year)));
+            dispatch(change('savingValueForm', 'savingType', [options.find(option => option.id === saving['typeId'])]));
+            dispatch(change('savingValueForm', 'value', saving['value'].toFixed(2)));
+            dispatch(change('savingValueForm', 'month', [monthOptions.find(month => month.id === parseInt(saving['month']))]));
+            dispatch(change('savingValueForm', 'year', parseInt(saving['year'])));
         }
         else {
             dispatch(change('savingValueForm', 'month', [monthOptions.find(month => month.id === parseInt(moment().format('MM')))]));

@@ -51,7 +51,7 @@ const ExpenseTypesTable = ({
     };
 
     const routeChange = (item) =>{ 
-        let path = `${EXPENSE_TYPES_MANAGER_PATH}/${item?.expenseTypeId}`; 
+        let path = `${EXPENSE_TYPES_MANAGER_PATH}/${item?.id}`; 
         navigate(path);
     }
 
