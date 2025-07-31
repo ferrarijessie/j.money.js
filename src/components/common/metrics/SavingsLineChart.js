@@ -1,5 +1,6 @@
 import React from "react";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
+import moment from "moment";
 
 const COLORS = ['#8884d8', '#82ca9d', '#ffc658', '#ff7300', '#ffbb28'];
 
@@ -9,13 +10,38 @@ const MONTHS = [
 ];
 
 const SavingsLineChart = ({ savingsData }) => {
-    // Group savings by type and month
+    const [selectedYear, setSelectedYear] = React.useState(moment().format('Y'));
+
+    // Get all unique years from savings data
+    const years = [...new Set(savingsData.map(saving => saving.year))].sort((a, b) => b - a);
+
+    // Calculate previous year's total for each type
+    const previousYearTotals = savingsData.reduce((acc, saving) => {
+        if (saving.year+'' !== (selectedYear - 1).toString()) {
+            return acc;
+        }
+        const typeName = saving.typeName;
+        if (!acc[typeName]) {
+            acc[typeName] = 0;
+        }
+        acc[typeName] += saving.value;
+        return acc;
+    }, {});
+
+    // Group savings by type and month for the selected year
     const groupedData = savingsData.reduce((acc, saving) => {
+        if (saving.year+'' !== selectedYear) {
+            return acc;
+        }
         const monthIndex = saving.month - 1;
         const typeName = saving.typeName;
         
         if (!acc[typeName]) {
+            // Initialize with previous year's total
             acc[typeName] = MONTHS.map(() => 0);
+            if (previousYearTotals[typeName]) {
+                acc[typeName][0] = previousYearTotals[typeName];
+            }
         }
         
         acc[typeName][monthIndex] += saving.value;
@@ -35,7 +61,18 @@ const SavingsLineChart = ({ savingsData }) => {
 
     return (
         <>
-            <div style={{ marginBottom: '0.5rem', fontWeight: 'bold', paddingLeft: '1rem' }}>Monthly Savings</div>
+            <div style={{ display: 'flex', alignItems: 'center', marginBottom: '0.5rem' }}>
+                <div style={{ fontWeight: 'bold', marginRight: '1rem' }}>Monthly Savings</div>
+                <select 
+                    value={selectedYear}
+                    onChange={(e) => setSelectedYear(e.target.value)}
+                    style={{ padding: '4px', fontSize: '14px' }}
+                >
+                    {years.map(year => (
+                        <option key={year} value={year}>{year}</option>
+                    ))}
+                </select>
+            </div>
             <div style={{ height: '300px', marginTop: '1rem' }}>
                 <ResponsiveContainer width="100%" height="100%">
                     <LineChart data={chartData}>
