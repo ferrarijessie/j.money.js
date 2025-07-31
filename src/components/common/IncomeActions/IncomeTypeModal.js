@@ -48,7 +48,7 @@ let IncomeTypeModal = ({
         try {
             if (!!incomeType) {
                 await editIncomeTypeRequest({
-                    id: incomeType["incomeTypeId"], 
+                    id: incomeType["id"], 
                     payload: payload
                 });
             }

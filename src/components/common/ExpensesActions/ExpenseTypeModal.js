@@ -44,13 +44,15 @@ let ExpenseTypeModal = ({
             'category': values.category[0].id,
             'recurrent': values.recurrent,
             'baseValue': values.baseValue,
-            'endDate': values.endDate ? values.endDate.toISOString().split('T')[0] : null
+        }
+        if (values.endDate) {
+            payload.endDate = values.endDate.toISOString().split('T')[0];
         }
 
         try {
             if (expenseType !== null) {
                 await editExpenseTypeRequest({
-                    id: expenseType["expenseTypeId"], 
+                    id: expenseType["id"], 
                     payload: payload
                 });
             }
@@ -117,7 +119,6 @@ let ExpenseTypeModal = ({
             dispatch(change('expenseTypeForm', 'category', []));
             dispatch(change('expenseTypeForm', 'recurrent', false));
             dispatch(change('expenseTypeForm', 'baseValue', 0.00));
-            dispatch(change('expenseTypeForm', 'endDate', new Date()));
         }
     }, [expenseType, dispatch, options]);
 

@@ -51,7 +51,7 @@ const ExpenseTypeManager = () => {
     };
 
     const onConfirmDelete = async () => {
-        await deleteExpenseTypeRequest(selectedExpenseType["expenseTypeId"]);
+        await deleteExpenseTypeRequest(selectedExpenseType["id"]);
         await reload();
         onCloseModal();
     };
@@ -106,7 +106,7 @@ const ExpenseTypeManager = () => {
                     onClose={onCloseModal}
                     onConfirmClick={onConfirmDelete}
                     title="Delete Expense Type"
-                    content={`Are you sure you want to delete Expense Type #${selectedExpenseType["expenseTypeId"]} - ${selectedExpenseType["name"]} and all the expenses attached to it?`}
+                    content={`Are you sure you want to delete Expense Type #${selectedExpenseType["id"]} - ${selectedExpenseType["name"]} and all the expenses attached to it?`}
                 />
             }
         </>
