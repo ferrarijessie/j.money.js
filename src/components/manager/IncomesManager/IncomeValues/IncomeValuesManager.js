@@ -59,7 +59,7 @@ const IncomeValuesManager = () => {
     const onConfirmDelete = async () => {
         setIsSaveLoading(true);
 
-        await deleteIncomeRequest(selectedIncome["incomeId"]);
+        await deleteIncomeRequest(selectedIncome["id"]);
         await reload();
         onCloseModal();
 
@@ -110,8 +110,8 @@ const IncomeValuesManager = () => {
                         isOpen={isConfirmModalOpen}
                         onClose={onCloseModal}
                         onConfirmClick={onConfirmDelete}
-                        title="Delete Expense"
-                        content={`Are you sure you want to delete Expense ${selectedIncome["incomeType"]} - ${selectedIncome["month"]}/${selectedIncome["year"]}?`}
+                        title="Delete Income"
+                        content={`Are you sure you want to delete Income ${selectedIncome["typeName"]} - ${selectedIncome["month"]}/${selectedIncome["year"]}?`}
                         isLoading={isSaveLoading}
                     />
                 </>

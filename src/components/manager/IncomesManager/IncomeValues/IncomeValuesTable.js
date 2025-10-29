@@ -21,7 +21,7 @@ const IncomeValuesTable = ({
     const { mutateAsync: editIncomeRequest } = useIncomePut();
 
     const onClickStatus = async (item) => {
-        const incomeId = item.data.incomeId;
+        const incomeId = item.data.id;
 
         await editIncomeRequest({
             id: incomeId, 

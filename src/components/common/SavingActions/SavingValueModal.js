@@ -102,7 +102,8 @@ let SavingValueModal = ({
             dispatch(change('savingValueForm', 'year', parseInt(saving['year'])));
         }
         else {
-            dispatch(change('savingValueForm', 'month', [monthOptions.find(month => month.id === !!selectedMonth ? selectedMonth : parseInt(moment().format('MM')))]));
+            const monthVal = !!selectedMonth ? parseInt(selectedMonth) : parseInt(moment().format('MM'));
+            dispatch(change('savingValueForm', 'month', [monthOptions.find(month => month.id === monthVal)]));
             dispatch(change('savingValueForm', 'year', !!selectedYear ? selectedYear : moment().format('YYYY')));
         }
     }, [saving, savingTypeInitial, options, monthOptions, dispatch, selectedMonth, selectedYear]);

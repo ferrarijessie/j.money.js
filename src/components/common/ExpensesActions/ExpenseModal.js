@@ -12,7 +12,7 @@ import {
 import { KIND as ButtonKind } from "baseui/button";
 import { FlexGrid, FlexGridItem } from "baseui/flex-grid";
 import { toaster, ToasterContainer } from "baseui/toast";
-import { change, reduxForm, Field } from 'redux-form';
+import { change, reset, reduxForm, Field } from 'redux-form';
 import { connect } from 'react-redux';
 
 import { renderField, renderSelectField } from '../formComponents';
@@ -68,6 +68,7 @@ let ExpenseModal = ({
             }
             await reload();
             setIsLoading(false);
+            dispatch(reset('expenseForm'));
             onClose();
         } catch (error) {
             toaster.negative(`${error}`);
@@ -75,7 +76,6 @@ let ExpenseModal = ({
         }   
     };
 
-    
     const options = expenseTypes?.map(eType => ({
         label: eType['name'],
         id: eType['id'],
@@ -101,7 +101,8 @@ let ExpenseModal = ({
             dispatch(change('expenseForm', 'year', expense['year']));
         }
         else {
-            dispatch(change('expenseForm', 'month',  [monthOptions.find(m => m.id === !!selectedMonth ? selectedMonth : parseInt(moment().format('MM')))]));
+            const monthVal = !!selectedMonth ? parseInt(selectedMonth) : parseInt(moment().format('MM'));
+            dispatch(change('expenseForm', 'month',  [monthOptions.find(m => m.id === monthVal)]));
             dispatch(change('expenseForm', 'year', !!selectedYear ? selectedYear : moment().format('YYYY')));
         }
     }, [dispatch, monthOptions, expenseTypeInitial, options, expense, selectedMonth, selectedYear]);

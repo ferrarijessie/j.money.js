@@ -104,7 +104,8 @@ let IncomeModal = ({
             dispatch(change('incomeForm', 'year', moment().format('YYYY')));
         }
         else {
-            dispatch(change('incomeForm', 'month', [monthOptions.find(m => m.id === !!selectedMonth ? selectedMonth : parseInt(moment().format('MM')))]));
+            const monthVal = !!selectedMonth ? parseInt(selectedMonth) : parseInt(moment().format('MM'));
+            dispatch(change('incomeForm', 'month', [monthOptions.find(m => m.id === monthVal)]));
             dispatch(change('incomeForm', 'year', !!selectedYear ? selectedYear : moment().format('YYYY')));
         }
     }, [income, incomeTypeInitial, options, monthOptions, dispatch, selectedMonth, selectedYear]);

@@ -233,6 +233,13 @@ const Home = () => {
             info: { id: 2026, type: 'year' },
             navExitIcon: Delete,
             children: generateMonths(2026)
+        },
+        {
+            active: selectedYear === '2027',
+            label: "2027",
+            info: { id: 2027, type: 'year' },
+            navExitIcon: Delete,
+            children: generateMonths(2027)
         }
     ]);
 
