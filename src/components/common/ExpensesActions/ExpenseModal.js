@@ -30,7 +30,9 @@ let ExpenseModal = ({
     expenseTypeInitial = null,
     expense = null,
     dispatch,
-    handleSubmit
+    handleSubmit,
+    selectedMonth,
+    selectedYear
 }) => {
     
     const [isLoading, setIsLoading] = React.useState(false);
@@ -93,17 +95,16 @@ let ExpenseModal = ({
         }
 
         else if (!!expense) {
-            console.log(options);
             dispatch(change('expenseForm', 'expenseType', [options.find(e => e.id === expense['typeId'])]));
             dispatch(change('expenseForm', 'value', expense['value'].toFixed(2)));
             dispatch(change('expenseForm', 'month', [monthOptions.find(m => m.id === expense['month'])]));
             dispatch(change('expenseForm', 'year', expense['year']));
         }
         else {
-            dispatch(change('expenseForm', 'month', [monthOptions.find(m => m.id === parseInt(moment().format('MM')))]));
-            dispatch(change('expenseForm', 'year', moment().format('YYYY')));
+            dispatch(change('expenseForm', 'month',  [monthOptions.find(m => m.id === !!selectedMonth ? selectedMonth : parseInt(moment().format('MM')))]));
+            dispatch(change('expenseForm', 'year', !!selectedYear ? selectedYear : moment().format('YYYY')));
         }
-    }, [dispatch, monthOptions, expenseTypeInitial, options, expense]);
+    }, [dispatch, monthOptions, expenseTypeInitial, options, expense, selectedMonth, selectedYear]);
 
     return (
         <>

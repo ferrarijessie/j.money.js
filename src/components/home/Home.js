@@ -477,6 +477,8 @@ const Home = () => {
                 expense={selectedItem}
                 reload={reload}
                 expenseTypes={expenseTypes}
+                selectedMonth={selectedMonth}
+                selectedYear={selectedYear}
             />
 
             <IncomeModal 
@@ -485,6 +487,8 @@ const Home = () => {
                 income={selectedItem}
                 reload={reload}
                 incomeTypes={incomeTypes}
+                selectedMonth={selectedMonth}
+                selectedYear={selectedYear}
             />
 
             <SavingValueModal 
@@ -493,6 +497,8 @@ const Home = () => {
                 saving={selectedItem}
                 reload={reload}
                 savingTypes={savingTypes}
+                selectedMonth={selectedMonth}
+                selectedYear={selectedYear}
             />
         </>
     );

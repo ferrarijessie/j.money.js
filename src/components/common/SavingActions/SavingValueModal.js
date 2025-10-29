@@ -29,7 +29,9 @@ let SavingValueModal = ({
     savingTypeInitial = null,
     saving = null,
     dispatch,
-    handleSubmit
+    handleSubmit,
+    selectedMonth,
+    selectedYear
 }) => {
     
     const [isLoading, setIsLoading] = React.useState(false);
@@ -100,10 +102,10 @@ let SavingValueModal = ({
             dispatch(change('savingValueForm', 'year', parseInt(saving['year'])));
         }
         else {
-            dispatch(change('savingValueForm', 'month', [monthOptions.find(month => month.id === parseInt(moment().format('MM')))]));
-            dispatch(change('savingValueForm', 'year', moment().format('YYYY')));
+            dispatch(change('savingValueForm', 'month', [monthOptions.find(month => month.id === !!selectedMonth ? selectedMonth : parseInt(moment().format('MM')))]));
+            dispatch(change('savingValueForm', 'year', !!selectedYear ? selectedYear : moment().format('YYYY')));
         }
-    }, [saving, savingTypeInitial, options, monthOptions, dispatch]);
+    }, [saving, savingTypeInitial, options, monthOptions, dispatch, selectedMonth, selectedYear]);
 
     return (
         <>

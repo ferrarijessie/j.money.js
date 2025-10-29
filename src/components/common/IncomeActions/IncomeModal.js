@@ -32,7 +32,9 @@ let IncomeModal = ({
     incomeTypeInitial = null,
     income = null,
     dispatch,
-    handleSubmit
+    handleSubmit,
+    selectedMonth,
+    selectedYear
 }) => {
     
     const [isLoading, setIsLoading] = React.useState(false);
@@ -95,17 +97,17 @@ let IncomeModal = ({
             dispatch(change('incomeForm', 'month', [monthOptions.find(m => m.id === income['month'])]));
             dispatch(change('incomeForm', 'year', income['year']));
         }
-        if (!!incomeTypeInitial) {
+        else if (!!incomeTypeInitial) {
             dispatch(change('incomeForm', 'incomeType', [options.find(e => e.id === incomeTypeInitial.id)]));
             dispatch(change('incomeForm', 'value', incomeTypeInitial.baseValue.toFixed(2)));
             dispatch(change('incomeForm', 'month', [monthOptions.find(m => m.id === parseInt(moment().format('MM')))]));
             dispatch(change('incomeForm', 'year', moment().format('YYYY')));
         }
         else {
-            dispatch(change('incomeForm', 'month', [monthOptions.find(m => m.id === parseInt(moment().format('MM')))]));
-            dispatch(change('incomeForm', 'year', moment().format('YYYY')));
+            dispatch(change('incomeForm', 'month', [monthOptions.find(m => m.id === !!selectedMonth ? selectedMonth : parseInt(moment().format('MM')))]));
+            dispatch(change('incomeForm', 'year', !!selectedYear ? selectedYear : moment().format('YYYY')));
         }
-    }, [income, incomeTypeInitial, options, monthOptions, dispatch]);
+    }, [income, incomeTypeInitial, options, monthOptions, dispatch, selectedMonth, selectedYear]);
 
     return (
         <>
