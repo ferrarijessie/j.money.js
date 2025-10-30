@@ -1,4 +1,5 @@
 import * as React from "react";
+import moment from "moment";
 import {
   Modal,
   ModalHeader,
@@ -39,15 +40,20 @@ let ExpenseTypeModal = ({
     const onSubmit = async (values) => {
         setIsLoading(true);
 
+        let endDate = null;
+        if (values.endDate[0] !== null) {
+            endDate = values.endDate[0].toISOString().split('T')[0];
+        }
+
         const payload = {
             'name': values.name,
             'category': values.category[0].id,
             'recurrent': values.recurrent,
             'baseValue': values.baseValue,
+            'endDate': endDate
         }
-        if (values.endDate) {
-            payload.endDate = values.endDate.toISOString().split('T')[0];
-        }
+
+        console.log(payload);
 
         try {
             if (expenseType !== null) {
@@ -107,6 +113,7 @@ let ExpenseTypeModal = ({
 
     React.useEffect(() => {
         if (expenseType !== null) {
+            console.log(expenseType["endDate"]);
             dispatch(change('expenseTypeForm', 'name', expenseType["name"]));
             dispatch(change('expenseTypeForm', 'category', [options.find(o => o.id === expenseType["category"]) || options[0]]));
             dispatch(change('expenseTypeForm', 'recurrent', expenseType["recurrent"]));

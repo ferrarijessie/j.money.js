@@ -46,6 +46,10 @@ export const renderDateField = ({ input, label, type, meta: { touched, error } }
             type={type}
             size={InputSize.compact}
             formatDisplay="DD/MM/YYYY"
+            value={input.value}
+            onChange={({ date }) =>
+                input.onChange(Array.isArray(date) ? date : [date])
+            }
             clearable
         />
     </FormControl>

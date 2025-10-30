@@ -15,6 +15,8 @@ import {
     typesTableOverrides
 } from "../../common/overrides";
 
+import moment from "moment";
+
 
 const ExpenseTypesTable = ({
     data,
@@ -101,6 +103,9 @@ const ExpenseTypesTable = ({
             </TableBuilderColumn>
             <TableBuilderColumn id="baseValue" header="Base Value" sortable>
                 {(row) => row["baseValue"] ? `R$ ${row["baseValue"].toFixed(2)}` : "-"}
+            </TableBuilderColumn>
+            <TableBuilderColumn id="endDate" header="End Date" sortable>
+                {(row) => row["endDate"] ? moment(row["endDate"]).format("DD/MM/YYYY") : "-"}
             </TableBuilderColumn>
             <TableBuilderColumn id="actions">
                 {(row) => expenseTypeActions(row)}
