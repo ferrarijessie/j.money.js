@@ -41,8 +41,8 @@ let ExpenseTypeModal = ({
         setIsLoading(true);
 
         let endDate = null;
-        if (values.endDate[0] !== null) {
-            endDate = values.endDate[0].toISOString().split('T')[0];
+        if (values.endDate && values.endDate[0] !== null) {
+            endDate = values.endDate[0]?.toISOString().split('T')[0];
         }
 
         const payload = {
