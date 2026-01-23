@@ -11,6 +11,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faReceipt, faMoneyBills, faChevronRight } from "@fortawesome/free-solid-svg-icons";
 
 import SavingsLineChart from "../../common/metrics/SavingsLineChart";
+import CategoryMetrics from "../../common/metrics/CategoryMetrics";
 
 import { 
     SAVINGS_MANAGER_PATH, 
@@ -58,6 +59,26 @@ const SavingsManager = () => {
         moment().format('M')
     );
 
+    // Calculate monthly totals per category using category string
+    const categoryMonthTotals = savingsListData
+        .reduce((acc, saving) => {
+            const categoryName = saving.name;
+            const value = saving.currentMonthValue;
+            acc[categoryName] = value;
+            return acc;
+    }, {});
+
+    // Calculate balance totals per category using category string
+    const categoryBalanceTotals = savingsListData
+        .reduce((acc, saving) => {
+            const categoryName = saving.name;
+            const value = saving.balance + saving.currentMonthValue;
+            acc[categoryName] = value;
+            return acc;
+    }, {});
+
+
+
     return (
         <ManagerSubPage 
             activeItem={SAVINGS_MANAGER_PATH}
@@ -102,6 +123,22 @@ const SavingsManager = () => {
             </TagsContainerUI>
             
             <FlexGrid flexGridColumnCount={1} {...managerSummaryGridOverrides}>
+                <FlexGridItem>
+                <FlexGrid flexGridColumnCount={2} gap="scale800" style={{ marginTop: '20px' }}>
+                    <FlexGridItem>
+                        <CategoryMetrics 
+                            totals={categoryMonthTotals}
+                            title="Monthly Totals"
+                        />
+                    </FlexGridItem> 
+                    <FlexGridItem  style={{ borderLeft: '1px solid #ccc' }}>
+                        <CategoryMetrics 
+                            totals={categoryBalanceTotals}
+                            title="Balance Totals"
+                        />
+                    </FlexGridItem> 
+                </FlexGrid>
+                </FlexGridItem>
                 <FlexGridItem>
                     <FlexGrid flexGridColumnCount={1} gap="scale800" style={{ marginTop: '20px' }}>
                         <FlexGridItem>
