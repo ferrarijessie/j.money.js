@@ -7,9 +7,11 @@ import { Block } from "baseui/block";
 import { styled } from "styletron-react";
 import { Delete, Plus } from "baseui/icon";
 import { Tile, TILE_KIND, ALIGNMENT, StyledParagraph } from "baseui/tile";
-import { Button, SHAPE } from "baseui/button";
+import { Button, SHAPE, KIND, SIZE } from "baseui/button";
+import { ButtonGroup } from "baseui/button-group";
 import { StatefulPopover, PLACEMENT } from "baseui/popover";
 import { StatefulMenu } from "baseui/menu";
+import { Select, SIZE as SelectSize } from "baseui/select";
 import { FlexGrid, FlexGridItem } from "baseui/flex-grid";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -33,6 +35,8 @@ import IncomeModal from "../common/IncomeActions/IncomeModal";
 import SavingValueModal from "../common/SavingActions/SavingValueModal";
 import SummaryTable from "./SummaryTable";
 import EmptySummary from "./EmptySummary";
+import { ControlContainer } from "baseui/form-control/styled-components";
+import { BaseButton } from "baseui/button/styled-components";
 
 
 const ContainerUI = styled(Block, {
@@ -49,6 +53,96 @@ const addButtonItemOverrides = {
             style: {
                 display: 'flex',
                 justifyContent: 'flex-end'
+            }
+        }
+    }
+};
+
+export const periodGridOverrides = {
+    overrides: {
+        Block: {
+            style : {
+                width: '100%',
+                background: '#000000',
+                // padding: '10px',
+                justifyContent: 'center',
+            }
+        }
+    }
+}
+
+export const yearSelectItemOverrides = {
+    overrides: {
+        Block: {
+            style : {
+                width: '85px',
+                flexGrow: 0,
+                padding: '0px 5px',
+                borderRight: '1px solid #555555',
+                borderLeft: '1px solid #555555',
+            }
+        }
+    }
+};
+
+export const yearSelectInputOverrides = {
+    overrides: {
+        ControlContainer: {
+            style: {
+                    color: '#eeeeee',
+                    fontWeight: 600,
+                    borderLeftColor: '#000000',
+                    borderRightColor: '#000000',
+                    borderTopColor: '#000000',
+                    borderBottomColor: '#000000',
+                    backgroundColor: '#000000',
+            }
+        },
+        SelectArrow: {
+            props: {
+                overrides: {
+                    Svg: {
+                        style: {
+                            color: '#eeeeee',
+                            cursor: 'pointer',
+                        }
+                    }
+                }
+            }
+        }
+    }
+};
+
+export const monthSelectItemOverrides = {
+    overrides: {
+        Block: {
+            style : {
+                flexGrow: 0,
+            }
+        }
+    }
+};
+
+export const monthButtonGroupOverrides = {
+    overrides: {
+        Root: {
+            style: {
+                columnGap: '0px',
+            }
+        }
+    }
+};
+
+export const monthButtonOverrides = {
+    overrides: {
+        BaseButton: {
+            style: {
+                width: '95px',
+                backgroundColor: '#000000',
+                color: '#eeeeee',
+                borderRadius: '0px',
+                borderRight: '1px solid #555555',
+                fontWeight: 600,
             }
         }
     }
@@ -131,7 +225,7 @@ const balanceTileOverrides = {
 };
 
 const Home = () => {
-    const [selectedYear, setSelectedYear] = React.useState(moment().format("YYYY"));
+    const [selectedYear, setSelectedYear] = React.useState([{id: moment().format("YYYY"), label: moment().format("YYYY")}]);
     const [selectedMonth, setSelectedMonth] = React.useState(moment().format("M"));
 
     const [isExpensesSelected, setIsExpensesSelected] = React.useState(false);
@@ -159,7 +253,7 @@ const Home = () => {
         data: data = [],
         isLoading: isLoading,
         refetch: reload
-    } = useSummaryList(selectedYear, selectedMonth);
+    } = useSummaryList(selectedYear[0].id, selectedMonth);
 
     const {
         data: expenseTypes = []
@@ -172,90 +266,6 @@ const Home = () => {
     const {
         data: savingTypes = []
     } = useSavingTypes();
-    
-    const generateMonths = (year) => {
-        const months = moment.months();
-        return months.map(
-            (month, index) => ({
-                label: month,
-                id: index+1,
-                info: { id: `${year}${index+1}`, type: 'month' },
-                active: `${index+1}` === selectedMonth
-            })
-        )
-    };
-
-    function getUniqueIdentifier(item) {
-        if (item.info) {
-          return item.info.id;
-        }
-        return item.label;
-    };
-
-    const selectMonth = (item) => {
-        let activeItem = item;
-
-        if (item.info.type == 'year') {
-            setSelectedYear(item.info.id);
-            if (item.info.id+'' === moment().format('Y')) {
-                activeItem = item.children.filter(sub => sub.id+'' === moment().format('M'))[0];
-                setSelectedMonth(moment().format('M'));
-            }
-            else {
-                activeItem = item.children[0];
-                setSelectedMonth("1");
-            }
-        }
-        if (item.info.type == 'month') {
-            setSelectedMonth(item?.['id']);
-        }
-        setMainItems((prev) => setItemActive(prev, activeItem, getUniqueIdentifier));
-    };
-
-    const [mainItems, setMainItems] = React.useState([
-        {
-            active: selectedYear === '2024',
-            label: "2024",
-            info: { id: 2024, type: 'year' },
-            navExitIcon: Delete,
-            children: generateMonths(2024)
-        },
-        {
-            active: selectedYear === '2025',
-            label: "2025",
-            info: { id: 2025, type: 'year' },
-            navExitIcon: Delete,
-            children: generateMonths(2025)
-        },
-        {
-            active: selectedYear === '2026',
-            label: "2026",
-            info: { id: 2026, type: 'year' },
-            navExitIcon: Delete,
-            children: generateMonths(2026)
-        },
-        {
-            active: selectedYear === '2027',
-            label: "2027",
-            info: { id: 2027, type: 'year' },
-            navExitIcon: Delete,
-            children: generateMonths(2027)
-        },
-        {
-            active: selectedYear === '2028',
-            label: "2028",
-            info: { id: 2028, type: 'year' },
-            navExitIcon: Delete,
-            children: generateMonths(2028)
-        },
-        {
-            active: selectedYear === '2029',
-            label: "2029",
-            info: { id: 2029, type: 'year' },
-            navExitIcon: Delete,
-            children: generateMonths(2029)
-        }
-    ]);
 
     const selectItem = (item) => {
         setIsExpensesSelected(item === "expenses" ? !isExpensesSelected : isExpensesSelected);
@@ -389,13 +399,59 @@ const Home = () => {
         return (totalIncome - (totalSavings + totalExpense)).toFixed(2);
     };
 
+    const yearItems = ['2024','2025','2026','2027','2028','2029'];
+
+    const onYearSelect = (item) => {
+        setSelectedYear(item);
+
+        if (item === moment().format('YYYY')) {
+            setSelectedMonth(moment().format('M'));
+        } else {
+            setSelectedMonth('1');
+        }
+    };
+
 
     return (
         <>
-            <AppNavigation 
-                mainItems={mainItems} 
-                onMainItemSelect={item => selectMonth(item)} 
-            />
+            <AppNavigation />
+
+            <FlexGrid flexGridColumnCount={2} {...periodGridOverrides}>
+                <FlexGridItem {...yearSelectItemOverrides}>
+                    <Select
+                        options={yearItems.map((y) => ({ label: y, id: y }))}
+                        value={selectedYear}
+                        labelKey="label"
+                        valueKey="id"
+                        placeholder={!selectedYear ? "Select year" : null}
+                        clearable={false}
+                        creatable={false}
+                        onChange={(params) => onYearSelect(params.value)}
+                        size={SelectSize.compact}
+                        {...yearSelectInputOverrides}
+                    />
+                </FlexGridItem>
+                
+                <FlexGridItem {...monthSelectItemOverrides}>
+                    <ButtonGroup size={SIZE.compact} kind={KIND.secondary}>
+                        {moment.months().map((m, idx) => {
+                        const monthValue = String(idx + 1);
+                        const isActive = selectedMonth === monthValue;
+
+                        return (
+                            <Button
+                            key={monthValue}
+                            onClick={() => setSelectedMonth(monthValue)}
+                            disabled={isActive}
+                            {...monthButtonOverrides}
+                            >
+                                {m}
+                            </Button>
+                        );
+                        })}
+                    </ButtonGroup>
+                </FlexGridItem>
+            </FlexGrid>
 
             <ContainerUI>
 
