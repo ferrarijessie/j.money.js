@@ -71,21 +71,29 @@ const ExpenseManager = () => {
 
     // Create a map of type IDs to their recurrence status
     const typeRecurrenceMap = new Map(
-        typesData.map(type => [type.expenseTypeId, type.recurrent])
+        typesData.map(type => [type.id, type.recurrent])
     );
 
     // Calculate metrics using the type recurrence map
     const metricsData = [
         {
             name: 'Recurrent',
-            value: expensesListData.reduce((acc, expense) => {
+            value: expensesListData
+                .filter(expense => 
+                    expense.year+'' === moment().format('Y') && expense.month+'' === moment().format('M')
+                )
+                .reduce((acc, expense) => {
                 const isRecurrent = typeRecurrenceMap.get(expense.typeId);
                 return isRecurrent ? acc + (typeof expense.value === 'number' ? expense.value : 0) : acc;
             }, 0)
         },
         {
             name: 'Non-Recurrent',
-            value: expensesListData.reduce((acc, expense) => {
+            value: expensesListData
+                .filter(expense => 
+                    expense.year+'' === moment().format('Y') && expense.month+'' === moment().format('M')
+                )
+                .reduce((acc, expense) => {
                 const isRecurrent = typeRecurrenceMap.get(expense.typeId);
                 return !isRecurrent ? acc + (typeof expense.value === 'number' ? expense.value : 0) : acc;
             }, 0)
@@ -93,7 +101,11 @@ const ExpenseManager = () => {
     ];
 
     // Calculate totals per category using category string
-    const categoryTotals = expensesListData.reduce((acc, expense) => {
+    const categoryTotals = expensesListData
+        .filter(expense => 
+            expense.year+'' === moment().format('Y') && expense.month+'' === moment().format('M')
+        )
+        .reduce((acc, expense) => {
         const categoryName = expense.category;
         const value = typeof expense.value === 'number' ? expense.value : 0;
         acc[categoryName] = (acc[categoryName] || 0) + value;

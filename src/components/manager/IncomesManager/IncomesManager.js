@@ -34,6 +34,8 @@ import { FlexGrid, FlexGridItem } from "baseui/flex-grid";
 const IncomesManager = () => {
 
     const navigate = useNavigate();
+    const currentYear = moment().format('Y');
+    const currentMonth = moment().format('M');
 
     const {
         isLoading: isTypesLoading, 
@@ -108,18 +110,28 @@ const IncomesManager = () => {
                         <FlexGridItem>
                             <RecurrentMetrics 
                                 recurrentTotal={incomesListData
-                                    .filter(income => typesData.find(type => type.incomeTypeId === income.typeId)?.recurrent)
+                                    .filter(income => 
+                                        income.year+'' === currentYear && income.month+'' === currentMonth && 
+                                        typesData.find(type => type.id === income.typeId)?.recurrent
+                                    )
                                     .reduce((acc, p) => acc + p.value, 0)
                                 }
                                 nonRecurrentTotal={incomesListData
-                                    .filter(income => !typesData.find(type => type.incomeTypeId === income.typeId)?.recurrent)
+                                    .filter(income => 
+                                        income.year+'' === currentYear && income.month+'' === currentMonth && 
+                                        !typesData.find(type => type.id === income.typeId)?.recurrent
+                                    )
                                     .reduce((acc, p) => acc + p.value, 0)
                                 }
                             />
                         </FlexGridItem>
                         <FlexGridItem style={{ borderLeft: '1px solid #ccc' }}>
                             <CategoryMetrics 
-                                totals={incomesListData.reduce((acc, income) => {
+                                totals={incomesListData
+                                    .filter(income => 
+                                        income.year+'' === currentYear && income.month+'' === currentMonth
+                                    )
+                                    .reduce((acc, income) => {
                                     acc[income.typeName] = (acc[income.typeName] || 0) + income.value;
                                     return acc;
                                 }, {})}
