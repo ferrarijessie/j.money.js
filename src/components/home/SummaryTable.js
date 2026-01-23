@@ -189,6 +189,9 @@ const SummaryTable = ({
             <TableBuilderColumn id="typeName" header="Type" sortable>
                 {(row) => row["typeName"]}
             </TableBuilderColumn>
+            <TableBuilderColumn id="categoryName" header="Category" sortable>
+                {(row) => row["categoryName"].toUpperCase()}
+            </TableBuilderColumn>
             <TableBuilderColumn id="status" header="Status" sortable>
                 {(row) => getStatus(row)}
             </TableBuilderColumn>
