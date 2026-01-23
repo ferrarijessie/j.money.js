@@ -15,11 +15,12 @@ const SavingsLineChart = ({ savingsData }) => {
     // Get all unique years from savings data
     const years = [...new Set(savingsData.map(saving => saving.year))].sort((a, b) => b - a);
 
-    // Calculate previous year's total for each type
+    // Calculate cumulative total of all years before the selected year for each type
     const previousYearTotals = savingsData.reduce((acc, saving) => {
-        if (saving.year+'' !== (selectedYear - 1).toString()) {
+        if (Number(saving.year) >= Number(selectedYear)) {
             return acc;
         }
+
         const typeName = saving.typeName;
         if (!acc[typeName]) {
             acc[typeName] = 0;

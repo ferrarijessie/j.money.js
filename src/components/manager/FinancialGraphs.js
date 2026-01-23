@@ -11,16 +11,17 @@ import { useSavings } from '../../hooks/savings/useSavings';
 
 const FinancialGraphs = () => {
     const [view, setView] = useState('monthly');
+    const [selectedYear, setSelectedYear] = useState(moment().format('YYYY'));
     
     const { data: incomesData = [], isIncomesLoading } = useIncomes();
     const { data: expensesData = [], isExpensesLoading } = useExpenses();
     const { data: savingsData = [], isSavingsLoading } = useSavings();
 
-    const calculateMonthlyTotal = (items, valueKey) => {
+    const calculateMonthlyTotal = (items, valueKey, year) => {
         const monthlyTotals = Array(12).fill(0);
         items.forEach(item => {
             const month = parseInt(item.month) - 1;
-            if (!isNaN(month) && month >= 0 && month < 12 && item.year+'' === moment().format('YYYY')) {
+            if (!isNaN(month) && month >= 0 && month < 12 && item.year+'' === year) {
                 monthlyTotals[month] += parseFloat(item[valueKey] || 0);
             }
         });
@@ -39,9 +40,9 @@ const FinancialGraphs = () => {
         return yearlyTotals;
     };
 
-    const monthlyIncomeTotals = calculateMonthlyTotal(incomesData || [], 'value');
-    const monthlyExpensesTotals = calculateMonthlyTotal(expensesData, 'value');
-    const monthlySavingsTotals = calculateMonthlyTotal(savingsData, 'value');
+    const monthlyIncomeTotals = calculateMonthlyTotal(incomesData || [], 'value', selectedYear);
+    const monthlyExpensesTotals = calculateMonthlyTotal(expensesData, 'value', selectedYear);
+    const monthlySavingsTotals = calculateMonthlyTotal(savingsData, 'value', selectedYear);
 
     const yearlyIncomeTotals = calculateYearlyTotal(incomesData || [], 'value');
     const yearlyExpensesTotals = calculateYearlyTotal(expensesData, 'value');
@@ -65,9 +66,9 @@ const FinancialGraphs = () => {
         ...savingsData.map(item => item.year)
     ].filter(year => year));
 
-    const sortedYears = Array.from(years).sort().slice(-3);
-    
-    sortedYears.forEach(year => {
+    const allYearsSorted = Array.from(years).sort((a, b) => Number(a) - Number(b));
+
+    allYearsSorted.forEach(year => {
         yearlyData.push({
             name: year,
             income: yearlyIncomeTotals[year] || 0,
@@ -132,6 +133,16 @@ const FinancialGraphs = () => {
                 <div style={{ flex: '1 1 auto' }}>
                     {title}
                 </div>
+                <select
+                    value={selectedYear}
+                    onChange={(e) => setSelectedYear(e.target.value)}
+                    disabled={view !== 'monthly'}
+                    style={{ padding: '4px', fontSize: '14px' }}
+                >
+                    {allYearsSorted.map(year => (
+                        <option key={year} value={year}>{year}</option>
+                    ))}
+                </select>
                 <Checkbox
                     checked={view === 'monthly'}
                     onChange={(e) => {

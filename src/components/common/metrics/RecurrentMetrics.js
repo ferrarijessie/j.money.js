@@ -20,7 +20,7 @@ const RecurrentMetrics = ({ recurrentTotal, nonRecurrentTotal }) => {
     return (
         <>
             <div style={{ marginBottom: '0.5rem', fontWeight: 'bold', paddingLeft: '1rem' }}>Recurrent vs Non-Recurrent</div>
-            <div style={{ height: '200px', marginTop: '1rem', paddingRight: '1rem' }}>
+            <div style={{ height: '300px', marginTop: '1rem', paddingRight: '1rem' }}>
             <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
                     <Pie
@@ -28,8 +28,7 @@ const RecurrentMetrics = ({ recurrentTotal, nonRecurrentTotal }) => {
                         data={metricsData}
                         cx="50%"
                         cy="50%"
-                        outerRadius={70}
-                        label
+                        outerRadius={90}
                     >
                         {metricsData.map((entry, index) => (
                             <Cell key={`cell-${index}`} fill={entry.color} />

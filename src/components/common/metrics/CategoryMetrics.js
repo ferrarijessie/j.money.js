@@ -3,7 +3,7 @@ import { PieChart, Pie, Tooltip, Cell, ResponsiveContainer, Legend } from 'recha
 
 const COLORS = ['#8884d8', '#82ca9d', '#ffc658', '#ff7300', '#ffbb28'];
 
-const CategoryMetrics = ({ totals }) => {
+const CategoryMetrics = ({ totals, title = "Categories" }) => {
     // Convert totals object to array of {name, value} pairs
     const metricsData = Object.entries(totals).map(([name, value], index) => ({
         name,
@@ -13,8 +13,8 @@ const CategoryMetrics = ({ totals }) => {
 
     return (
         <>
-            <div style={{ marginBottom: '0.5rem', fontWeight: 'bold', paddingLeft: '1rem' }}>Categories</div>
-            <div style={{ height: '200px', marginTop: '1rem' }}>
+            <div style={{ marginBottom: '0.5rem', fontWeight: 'bold', paddingLeft: '1rem' }}>{title}</div>
+            <div style={{ height: '300px', marginTop: '1rem' }}>
             <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
                     <Pie
@@ -22,8 +22,7 @@ const CategoryMetrics = ({ totals }) => {
                         data={metricsData}
                         cx="50%"
                         cy="50%"
-                        outerRadius={70}
-                        label
+                        outerRadius={90}
                     >
                         {metricsData.map((entry, index) => (
                             <Cell key={`cell-${index}`} fill={entry.color} />
